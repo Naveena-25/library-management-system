@@ -1,30 +1,17 @@
 package com.capgemini.librarymanagementjdbc.dto;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
 
 public class RequestInfo implements Serializable{
-	private BookDetails bookdetails;
-	private AdminInfo info;
+
 	private int rid;
 	private int id;
 	private int bookId;
 	private Date issueDate;
+	private Date expectedReturnDate;
 	private Date returnDate;
-	private boolean isIssued;
-	private boolean isReturned;
-	public BookDetails getBookdetails() {
-		return bookdetails;
-	}
-	public void setBookdetails(BookDetails bookdetails) {
-		this.bookdetails = bookdetails;
-	}
-	public AdminInfo getInfo() {
-		return info;
-	}
-	public void setInfo(AdminInfo info) {
-		this.info = info;
-	}
+	
 	public int getRid() {
 		return rid;
 	}
@@ -49,23 +36,17 @@ public class RequestInfo implements Serializable{
 	public void setIssueDate(Date issueDate) {
 		this.issueDate = issueDate;
 	}
+	public Date getExpectedReturnDate() {
+		return expectedReturnDate;
+	}
+	public void setExpectedReturnDate(Date expectedReturnDate) {
+		this.expectedReturnDate = expectedReturnDate;
+	}
 	public Date getReturnDate() {
 		return returnDate;
 	}
 	public void setReturnDate(Date returnDate) {
 		this.returnDate = returnDate;
-	}
-	public boolean isIssued() {
-		return isIssued;
-	}
-	public void setIssued(boolean isIssued) {
-		this.isIssued = isIssued;
-	}
-	public boolean isReturned() {
-		return isReturned;
-	}
-	public void setReturned(boolean isReturned) {
-		this.isReturned = isReturned;
 	}
 
 }

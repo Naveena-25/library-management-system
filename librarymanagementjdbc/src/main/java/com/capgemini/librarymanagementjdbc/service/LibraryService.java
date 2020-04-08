@@ -15,10 +15,10 @@ public interface LibraryService {
 	List<BookDetails> viewBooks();
 	List<RequestInfo> viewRequests();
 	boolean issueBook(int rid);
-	boolean removebook(BookDetails bookDetails);
-	boolean receivedBook(AdminInfo info, BookDetails bookDetails);
+	boolean removeBook(int bookId);
 	
 	AdminInfo userLogin(String emailId,String password);
-	RequestInfo bookRequest(AdminInfo info,BookDetails bookDetails);
-	RequestInfo bookReturn(AdminInfo info,BookDetails bookdetails);
+	RequestInfo bookRequest(int id , int bookId);
+	boolean bookReturn(int userId,int bookId);
+	boolean isBookReceived(int rid);
 }

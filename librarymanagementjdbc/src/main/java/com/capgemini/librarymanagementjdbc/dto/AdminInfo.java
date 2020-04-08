@@ -2,8 +2,7 @@ package com.capgemini.librarymanagementjdbc.dto;
 
 import java.io.Serializable;
 
-public class AdminInfo implements Serializable
-{
+public class AdminInfo implements Serializable {
 	private int id;
 	private String userName;
 	private String emailId;
@@ -11,6 +10,7 @@ public class AdminInfo implements Serializable
 	private String mobileNumber;
 	private String role;
 	private int noOfBooksBorrowed;
+	private int fine;
 
 	public int getId() {
 		return id;
@@ -53,6 +53,12 @@ public class AdminInfo implements Serializable
 	}
 	public void setNoOfBooksBorrowed(int noOfBooksBorrowed) {
 		this.noOfBooksBorrowed = noOfBooksBorrowed;
+	}
+	public int getFine() {
+		return fine;
+	}
+	public void setFine(int fine) {
+		this.fine = fine;
 	}
 
 }
