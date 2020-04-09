@@ -32,26 +32,22 @@ public class LibraryController {
 			do
 			{
 
-				try {
 					System.out.println("*******Library Management System******");
 					System.out.println("Press 1 For Admin Login");
 					System.out.println("Press 2 For User Login");
-					System.out.println("----------------------------------------");
-					switch(choice)
-					{
-
+					System.out.println("Enter your Choice");
+					choice = scanner.nextInt();
+					switch(choice) {
 					case 1:
 						System.out.println("Enter Login Credentials");
 						System.out.println("Enter Admin Email Id");
 						emailId = scanner.next();
 						System.out.println("Enter The Password");
 						password= scanner.next();
-						try 
-						{
+						try {
 							AdminInfo admin = service.login(emailId, password);
 
-							if(admin != null)
-							{
+							if(admin != null) {
 								System.out.println("Admin logged in Successfully");
 								do {
 									System.out.println("press 1 to Register New User");
@@ -67,8 +63,7 @@ public class LibraryController {
 									System.out.println("--------------------------------------");
 									System.out.println("Enter your choice:");
 									adminchoice = scanner.nextInt();
-									switch (adminchoice) 
-									{
+									switch (adminchoice) {
 									case 1:
 										info = new AdminInfo();
 										System.out.println("Enter the Details to add the New User");
@@ -233,17 +228,19 @@ public class LibraryController {
 										} catch (LMSException e) {
 											System.err.println(e.getMessage());
 										}
-
 										break;
-
+									case 0:
+										break;
+									default:
+										System.out.println("invalid option");
+									 break;
 									}
 
 								}while(adminchoice != 0);
 							}
 
 						}
-						catch (LMSException e) 
-						{
+						catch (LMSException e) {
 							System.err.println(e.getMessage());	
 						}
 
@@ -336,6 +333,11 @@ public class LibraryController {
 											System.err.println(e.getMessage());
 										}
 										break;
+									case 0:
+										break;
+									default:
+										System.out.println("invalid option");
+									 break;
 
 									}// End of Switch case
 								} while(userChoice!=0);
@@ -346,9 +348,6 @@ public class LibraryController {
 							System.err.println(e.getMessage());
 						}
 					} //End of  Main Switch Case
-				} catch (Exception e) {
-					System.err.println("Error in Choice");
-				}
 			} while(true);
 		} catch (Exception e) {
 			e.printStackTrace();
