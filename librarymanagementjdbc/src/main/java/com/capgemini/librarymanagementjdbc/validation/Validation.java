@@ -36,7 +36,6 @@ public class Validation {
 
 	
 	public boolean validateEmail(String email) throws Exception {
-		//String emailRegEx = "^[a-z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
 		String emailRegEx = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 		boolean result = false;
 		Pattern pattern = Pattern.compile(emailRegEx);
@@ -51,8 +50,7 @@ public class Validation {
 
 	public boolean validatePassword(String password) throws Exception 
 	{
-		//String passwordRegEx ="^((?=.*[a-z])(?=.*d)(?=.*[A-Z])(?=.*[@#$%!]).{8,20})$";
-		String passwordRegEx = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$";
+		String passwordRegEx = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$";
 		boolean result = false;
 		Pattern pattern = Pattern.compile(passwordRegEx);
 		Matcher matcher = pattern.matcher(password);
@@ -63,7 +61,7 @@ public class Validation {
 		}
 		else
 		{
-			throw new LMSException("Password should contain atleast 8 characters ,one uppercase,one lowercase and one symbol ");
+			throw new LMSException("Password should contain atleast 6 characters ,one uppercase,one lowercase and one symbol ");
 		}
 		return result;
 	}

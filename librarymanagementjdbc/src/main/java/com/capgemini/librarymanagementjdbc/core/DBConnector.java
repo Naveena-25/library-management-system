@@ -5,16 +5,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
 
-public class DBConnector
-{
-	public static void main(String[] args) 
-	{
-	}
-	public Connection getConnection()
-	{
+public class DBConnector {
+	public Connection getConnection() {
 		Connection conn = null;
-		try
-		{
+		try {
 			FileInputStream inputStream = new FileInputStream("library.properties");
 			Properties properties = new Properties();
 			properties.load(inputStream);
@@ -31,21 +25,18 @@ public class DBConnector
 		return null;
 	}
 
-	public String getQuery(String baseQuery)
-	{
+	public String getQuery(String baseQuery) {
 		String query = null;
 		FileInputStream inputStream;
-		try 
-		{
+		try {
 			inputStream = new FileInputStream("library.properties");
 			Properties properties = new Properties();
 			properties.load(inputStream);
 			query = properties.getProperty(baseQuery);
-			
+
 			return query;
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 

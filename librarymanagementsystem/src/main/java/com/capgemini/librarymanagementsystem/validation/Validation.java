@@ -36,7 +36,6 @@ public class Validation {
 
 	
 	public boolean validateEmail(String email) throws Exception {
-		//String emailRegEx = "^[a-z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
 		String emailRegEx = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 		boolean result = false;
 		Pattern pattern = Pattern.compile(emailRegEx);
@@ -51,7 +50,6 @@ public class Validation {
 
 	public boolean validatePassword(String password) throws Exception 
 	{
-		//String passwordRegEx ="^((?=.*[a-z])(?=.*d)(?=.*[A-Z])(?=.*[@#$%!]).{8,20})$";
 		String passwordRegEx = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$";
 		boolean result = false;
 		Pattern pattern = Pattern.compile(passwordRegEx);
@@ -67,17 +65,20 @@ public class Validation {
 		}
 		return result;
 	}
-	public boolean validateMobileNumber(long mobileNumber) throws Exception{
-
+	public boolean validateMobileNumber(String mobileNumber) throws Exception{
 		String mobileRegEx = "^([6789]{1}\\d{9})$";
-	//	boolean result = false;
-		if (Pattern.matches(mobileRegEx, String.valueOf(mobileNumber))) {
-				return true;
+		boolean result = false;
+		Pattern pattern = Pattern.compile(mobileRegEx);
+		Matcher matcher = pattern.matcher(mobileNumber);
+		
+		if (matcher.matches()) 
+		{
+			result = true;
 		}
 		else {
 			throw new Exception("Enter 10 Digit Mobile Number, It Should Start With 6,7,8 or 9");
 		}
-	//	return result;
+		return result;
 	}
 
 }

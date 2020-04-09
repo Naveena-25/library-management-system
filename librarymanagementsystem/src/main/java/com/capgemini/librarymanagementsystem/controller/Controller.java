@@ -29,7 +29,7 @@ public class Controller {
 			String name = null;
 			String emailId = null;
 			String password = null;
-			long mobileNumber = 0;
+			String mobileNumber = null;
 
 			int choice = 0;
 			int adminchoice = 0; 
@@ -98,8 +98,7 @@ public class Controller {
 										adminchoice = scanner.nextInt();
 										flag = true;
 
-									} catch (InputMismatchException e)
-									{
+									} catch (InputMismatchException e) {
 										System.err.println("Enter Only Digits");
 										flag = false;
 										scanner.next();
@@ -115,10 +114,8 @@ public class Controller {
 									user = new UserInfo();
 									System.out.println("Enter the details to Register New User");
 									//Do while For User Id
-									do
-									{
-										try
-										{
+									do {
+										try {
 											System.out.println("Enter user Id");
 											userId = scanner.nextInt();
 											validate.validateId(userId);
@@ -127,9 +124,7 @@ public class Controller {
 											System.err.println("Id Should Contain Only Digits");
 											flag = false;
 											scanner.next();
-										}
-										catch (Exception e) 
-										{
+										} catch (Exception e) {
 											System.out.println(e.getMessage());
 											flag = false;
 										}
@@ -141,9 +136,7 @@ public class Controller {
 											name = scanner.nextLine();
 											validate.validateName(name);
 											flag = true;	
-										}
-										catch(Exception e) 
-										{
+										} catch(Exception e) {
 											System.out.println(e.getMessage());
 											flag = false;
 										}
@@ -173,18 +166,13 @@ public class Controller {
 											flag = false;
 										}
 									}while(!flag);
-									//Password Validation Do While Loop
+									//Mobile Validation Do While Loop
 									do {
 										try {
 											System.out.println("Enter the Mobile Number");
-											mobileNumber = scanner.nextLong();
+											mobileNumber = scanner.next();
 											validate.validateMobileNumber(mobileNumber);
 											flag = true;
-
-										} catch (InputMismatchException e) {
-											System.err.println("Mobile Number Should Contain Only Digits");
-											flag = false;
-											scanner.next();
 
 										} catch (Exception e) {
 											System.err.println(e.getMessage());
@@ -504,7 +492,7 @@ public class Controller {
 								System.out.println(e.getMessage());
 								flag = false;
 							}
-						}while(!flag);
+						} while(!flag);
 						try {
 						userService.userLogin(emailId, password);
 						System.out.println("User LoggedIn successfully");
@@ -580,7 +568,6 @@ public class Controller {
 										flag = false;
 									}
 								} while (!flag);
-
 
 								do {
 									try {
@@ -680,5 +667,5 @@ public class Controller {
 			e.printStackTrace();
 		}
 
-	}//EnD of Main Method
+	}//End of Main Method
 }//End of  Controller Class

@@ -24,27 +24,21 @@ public class AdminDAOImpl implements AdminDAO{
 		if(details.getAdminEmail().equals(adminEmail)&& details.getPassword().equals(password)) {
 			return details;
 		}
-		throw new Exception("Invalid Admin credentials");
-
+		throw new Exception("Invalid Admin Credentials");
 	}
 	@Override
-	public boolean addUser(UserInfo userInfo)
-	{
-		for(UserInfo user : DataBase.USER_INFOS)
-		{
-			if(user.getUserId()==userInfo.getUserId() || user.getEmail().equalsIgnoreCase(userInfo.getEmail()))
-			{
+	public boolean addUser(UserInfo userInfo) {
+		for(UserInfo user : DataBase.USER_INFOS) {
+			if(user.getUserId()==userInfo.getUserId() || user.getEmail().equalsIgnoreCase(userInfo.getEmail())) {
 				throw new Exception("Cannot add user, as user already exists in the DB");
 			}
-		}
-		DataBase.USER_INFOS.add(userInfo);
+		} DataBase.USER_INFOS.add(userInfo);
 		return true;
 	}
 	@Override
 	public List<UserInfo> showUsers() {
 		List<UserInfo> userList = new LinkedList<UserInfo>();
-		for (UserInfo user : DataBase.USER_INFOS) 
-		{
+		for (UserInfo user : DataBase.USER_INFOS) {
 			user.getUserId();
 			user.getUserName();
 			user.getEmail();
@@ -55,12 +49,9 @@ public class AdminDAOImpl implements AdminDAO{
 		return userList;
 	}
 
-	public BookDetails search(int bookId)
-	{
-		for(BookDetails book : DataBase.BOOK_DETAILS)
-		{
-			if(book.getBookId()==bookId)
-			{
+	public BookDetails search(int bookId) {
+		for(BookDetails book : DataBase.BOOK_DETAILS) {
+			if(book.getBookId()==bookId) {
 				return book;
 			}
 		}
@@ -70,10 +61,8 @@ public class AdminDAOImpl implements AdminDAO{
 	@Override
 	public boolean addBook(BookDetails details) {
 		boolean add = true;
-		for (BookDetails bookInfo : DataBase.BOOK_DETAILS)
-		{
-			if(bookInfo.getBookId()==details.getBookId())
-			{
+		for (BookDetails bookInfo : DataBase.BOOK_DETAILS) {
+			if(bookInfo.getBookId()==details.getBookId()) {
 				throw new Exception("Book Can't Be Added, As Book is Already Exists");
 			}
 		}
@@ -81,11 +70,9 @@ public class AdminDAOImpl implements AdminDAO{
 		return add;
 	}
 	@Override
-	public List<BookDetails> showBooks()
-	{
+	public List<BookDetails> showBooks() {
 		List<BookDetails> books = new LinkedList<BookDetails>();
-		for (BookDetails bookDetails : DataBase.BOOK_DETAILS) 
-		{
+		for (BookDetails bookDetails : DataBase.BOOK_DETAILS) {
 			bookDetails.getBookId();
 			bookDetails.getBookName();
 			bookDetails.getAuthor();
@@ -93,15 +80,12 @@ public class AdminDAOImpl implements AdminDAO{
 			books.add(bookDetails);
 		}
 		return books;
-
 	}
 
 	@Override
-	public List<RequestInfo> showRequests() 
-	{
+	public List<RequestInfo> showRequests() {
 		List<RequestInfo> requestList = new LinkedList<RequestInfo>();
-		for (RequestInfo requestInfo : DataBase.REQUEST_INFOS)
-		{
+		for (RequestInfo requestInfo : DataBase.REQUEST_INFOS) {
 			requestInfo.getBookdetails();
 			requestInfo.getUserInfo();
 			requestInfo.isIssued();
@@ -122,12 +106,9 @@ public class AdminDAOImpl implements AdminDAO{
 
 		RequestInfo requestInfo = new RequestInfo();
 		int noOfBooksBorrowed = user.getNoOfBooksBorrowed();
-		for (RequestInfo info : DataBase.REQUEST_INFOS)
-		{
-			if (info.getUserInfo().getUserId() == user.getUserId())
-			{
-				if (info.getBookdetails().getBookId() == bookDetails.getBookId())
-				{
+		for (RequestInfo info : DataBase.REQUEST_INFOS) {
+			if (info.getUserInfo().getUserId() == user.getUserId()) {
+				if (info.getBookdetails().getBookId() == bookDetails.getBookId()) {
 					requestInfo = info;
 					isValid = true;
 				}
@@ -135,7 +116,6 @@ public class AdminDAOImpl implements AdminDAO{
 		}
 
 		if (isValid) {
-			//System.out.println("if the Entry is valid");
 			for (BookDetails info2 : DataBase.BOOK_DETAILS) {
 				if (info2.getBookId() == bookDetails.getBookId()) {
 					bookDetails = info2;
@@ -176,20 +156,16 @@ public class AdminDAOImpl implements AdminDAO{
 	}
 
 	@Override
-	public boolean removebook(BookDetails bookDetails) 
-	{
+	public boolean removebook(BookDetails bookDetails) {
 		boolean isExist=false;
 		BookDetails bookInfo1 = null;
-		for (BookDetails bookInfo : DataBase.BOOK_DETAILS)
-		{	
+		for (BookDetails bookInfo : DataBase.BOOK_DETAILS) {	
 			if(bookInfo.getBookId() == bookDetails.getBookId()) 
 			{
 				bookInfo1 = bookInfo;
 				isExist = true;
 			}
-		}
-		if(isExist) 
-		{
+		} if(isExist) {
 			DataBase.BOOK_DETAILS.remove(bookInfo1);
 			return true;
 		}
@@ -229,6 +205,6 @@ public class AdminDAOImpl implements AdminDAO{
 
 		}
 
-		 throw new Exception("Book is Not Recieved");
+		throw new Exception("Book is Not Recieved");
 	}
 }

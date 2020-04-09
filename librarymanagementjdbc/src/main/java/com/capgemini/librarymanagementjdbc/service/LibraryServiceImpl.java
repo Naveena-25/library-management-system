@@ -14,19 +14,18 @@ public class LibraryServiceImpl implements LibraryService{
 
 	@Override
 	public AdminInfo login(String emailId, String password) {
-		// TODO Auto-generated method stub
+		
 		return dao.login(emailId, password);
 	}
 
 	@Override
 	public boolean addUser(AdminInfo info) {
-		// TODO Auto-generated method stub
+	
 		return dao.addUser(info);
 	}
 
 	@Override
 	public List<AdminInfo> viewUsers() {
-		// TODO Auto-generated method stub
 		return dao.viewUsers();
 	}
 
@@ -61,6 +60,7 @@ public class LibraryServiceImpl implements LibraryService{
 
 	@Override
 	public boolean removeBook(int bookId) {
+		
 		return dao.removeBook(bookId);
 	}
 
@@ -79,12 +79,13 @@ public class LibraryServiceImpl implements LibraryService{
 
 	@Override
 	public boolean bookReturn(int userId,int bookId) {
+		
 		return dao.bookReturn(userId, bookId);
 	}
 
 	@Override
 	public boolean isBookReceived(int rid) {
-		// TODO Auto-generated method stub
+
 		return dao.isBookReceived(rid);
 	}
 

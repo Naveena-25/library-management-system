@@ -16,7 +16,7 @@ public interface LibraryDAO
 	List<RequestInfo> viewRequests();
 	boolean issueBook(int rid);
 	boolean removeBook(int bookId);
-	
+
 	AdminInfo userLogin(String emailId,String password);
 	RequestInfo bookRequest(int id , int bookId);
 	boolean bookReturn(int userId,int bookId);

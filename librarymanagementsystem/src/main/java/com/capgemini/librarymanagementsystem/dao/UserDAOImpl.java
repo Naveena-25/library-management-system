@@ -18,7 +18,6 @@ public class UserDAOImpl implements UserDAO{
 				return info;
 			}
 		}
-
 		throw new Exception("Invalid user credentials");
 	}
 
@@ -50,16 +49,11 @@ public class UserDAOImpl implements UserDAO{
 		}
 
 
-		if (!isRequestExists)
-		{
-			for (UserInfo userInfo1 : DataBase.USER_INFOS)
-			{
-				if (user.getUserId() == userInfo1.getUserId()) 
-				{
-					for (BookDetails bookInfo1 : DataBase.BOOK_DETAILS)
-					{
-						if (bookInfo1.getBookId() == bookDetails.getBookId())
-						{		
+		if (!isRequestExists) {
+			for (UserInfo userInfo1 : DataBase.USER_INFOS) {
+				if (user.getUserId() == userInfo1.getUserId()) {
+					for (BookDetails bookInfo1 : DataBase.BOOK_DETAILS) {
+						if (bookInfo1.getBookId() == bookDetails.getBookId()) {		
 							userInfo = userInfo1;
 							bookInfo = bookInfo1;
 							flag = true; 
@@ -70,25 +64,23 @@ public class UserDAOImpl implements UserDAO{
 
 			}
 		}
-		if (flag == true)
-		{
+		if (flag == true) {
 			requestInfo.setBookdetails(bookInfo);
 			requestInfo.setUserInfo(userInfo);
 			DataBase.REQUEST_INFOS.add(requestInfo);
 			return requestInfo;
 		}
-
 		throw new Exception("Invalid request or you cannot request that book");
 	}
+
 	@Override
 	public RequestInfo bookReturn(UserInfo userdetails,BookDetails bookdetails) {
-		
+
 		for (RequestInfo requestInfo : DataBase.REQUEST_INFOS) {
 
 			if (requestInfo.getBookdetails().getBookId() == bookdetails.getBookId() &&
 					requestInfo.getUserInfo().getUserId() == userdetails.getUserId() &&
 					requestInfo.isIssued() == true) {
-			//	System.out.println("Returning Issued book only");
 				requestInfo.setReturned(true);
 				requestInfo.setReturnedDate(returnedDate);
 				return requestInfo;

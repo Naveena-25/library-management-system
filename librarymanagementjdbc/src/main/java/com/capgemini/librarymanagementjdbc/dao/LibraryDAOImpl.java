@@ -15,18 +15,15 @@ import com.capgemini.librarymanagementjdbc.dto.BookDetails;
 import com.capgemini.librarymanagementjdbc.dto.RequestInfo;
 import com.capgemini.librarymanagementjdbc.exception.LMSException;
 
-public class LibraryDAOImpl implements LibraryDAO
-{
+public class LibraryDAOImpl implements LibraryDAO {
 	DBConnector dbConnector = new DBConnector();
 	Connection conn = null;
 	PreparedStatement pstmt = null;
 	@Override
-	public AdminInfo login(String emailId, String password)
-	{
+	public AdminInfo login(String emailId, String password) {
 		String query = null;
 		AdminInfo adminDetails = new AdminInfo();
-		try 
-		{
+		try {
 			conn = dbConnector.getConnection();
 			query = dbConnector.getQuery("loginCheckAdmin");
 
@@ -36,43 +33,30 @@ public class LibraryDAOImpl implements LibraryDAO
 
 			ResultSet rs = pstmt.executeQuery();
 
-			while(rs.next())
-			{
+			while(rs.next()){
 				adminDetails.setEmailId(rs.getString("email_id"));
 				adminDetails.setPassword(rs.getString("password"));
-
 				pstmt = null;
 				return adminDetails;
 			}
 
-		} 
-		catch (Exception e) 
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 
 		} 
-		finally 
-		{
-			try 
-			{
-				if (conn != null) 
-				{
+		finally {
+			try {
+				if (conn != null) {
 					conn.close();
-					conn = null;
 				}
-				if (pstmt != null) 
-				{
-
+				if (pstmt != null) {
 					pstmt.close();						
-					pstmt = null;
 				}
-			} catch (SQLException e) 
-			{
+			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		}
+		}	
 		return null;
-
 	}
 
 	@Override
@@ -95,33 +79,26 @@ public class LibraryDAOImpl implements LibraryDAO
 			if (count != 0) {
 				return true;
 			}
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new LMSException("User Already Exists");
-		} finally 
-		{
+		} 
+		finally {
 			try {
-				if (conn != null) 
-				{
+				if (conn != null) {
 					conn.close();
-					conn = null;
-				}
-				if (pstmt != null) 
-				{
+
+				} if (pstmt != null) {
 					pstmt.close();
-					pstmt = null;
 				}
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		return false;
-
-
 	}
+
 	@Override
-	public List<AdminInfo> viewUsers() 
-	{
+	public List<AdminInfo> viewUsers() {
 
 		List<AdminInfo> userList = new LinkedList<AdminInfo>();
 		Statement stmt = null;
@@ -141,7 +118,6 @@ public class LibraryDAOImpl implements LibraryDAO
 				info.setRole(resultSet.getString("role"));
 				userList.add(info);
 			}
-
 			return userList;
 		}catch (Exception e) {
 			throw new LMSException("No Users Present In The Database");
@@ -149,19 +125,16 @@ public class LibraryDAOImpl implements LibraryDAO
 	}
 
 	@Override
-	public boolean addBook(BookDetails bookDetails) 
-	{
+	public boolean addBook(BookDetails bookDetails) {
 		String query = null;
 		try {
 			conn = dbConnector.getConnection();
-
 			query = dbConnector.getQuery("addBookQuery");
 			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, bookDetails.getBookId());
 			pstmt.setString(2, bookDetails.getBookName());
 			pstmt.setString(3, bookDetails.getAuthor());
 			pstmt.setString(4, bookDetails.getPublisher());
-			pstmt.setString(5, bookDetails.isAvailable());
 			int count = pstmt.executeUpdate();
 
 			if (count != 0) {
@@ -253,7 +226,6 @@ public class LibraryDAOImpl implements LibraryDAO
 	public List<RequestInfo> viewRequests() 
 	{
 		List<RequestInfo> requestList = new LinkedList<RequestInfo>();
-		Connection conn = null;
 		Statement stmt = null;
 		ResultSet resultSet = null;
 
@@ -298,45 +270,40 @@ public class LibraryDAOImpl implements LibraryDAO
 	@SuppressWarnings("resource")
 	@Override
 	public boolean issueBook(int rid) {
-		ResultSet resultSet = null; // resultSet1, resultSet2, resultSet3, resultSet4, resultSet5;
-		//String query = null;
+		ResultSet resultSet = null; 
+		String query = null;
 		try {
 			conn = dbConnector.getConnection();
-			String query1 = dbConnector.getQuery("getRequest");
-			pstmt = conn.prepareStatement(query1);
+			query = dbConnector.getQuery("getRequest");
+			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, rid);
 			resultSet = pstmt.executeQuery();
 			if (resultSet.next()) {
 				RequestInfo info = new RequestInfo();
 				info.setId(resultSet.getInt("id"));
 				info.setBookId(resultSet.getInt("book_id"));
-				// System.out.println("Requested user"+info.getUserId());
 				int requestUserId = info.getId();
 				System.out.println("Requested user " + info.getId());
-				// System.out.println(requestUserId);
 				int requestBookId = resultSet.getInt("book_id");
 				System.out.println("Requested book " + requestBookId);
 
-				// In Admin setting the no Of Books Borrowed
+				// Setting the no Of Books Borrowed In Admin
 				if (requestUserId != 0)
 				{
-					//conn = dbConnector.getConnection();
 					String query2 = dbConnector.getQuery("getUserBooks");
 					pstmt = conn.prepareStatement(query2);
 					pstmt.setInt(1, requestUserId);
 					resultSet = pstmt.executeQuery();
 
-					if (resultSet.next()) 
-					{
+					if (resultSet.next()) {
 						AdminInfo info2 = new AdminInfo();
 						info2.setNoOfBooksBorrowed(resultSet.getInt("noOfBooksBorrowed"));
 						int noOfBooksBorrowed = info2.getNoOfBooksBorrowed();
 						System.out.println("no of books Before issue	" + noOfBooksBorrowed);
 						if (noOfBooksBorrowed < 3) 
 						{
-							//conn = dbConnector.getConnection();
-							String query3 = dbConnector.getQuery("issueBookQuery");
-							pstmt = conn.prepareStatement(query3);
+							query = dbConnector.getQuery("issueBookQuery");
+							pstmt = conn.prepareStatement(query);
 
 							pstmt.setInt(1, rid);
 
@@ -344,17 +311,15 @@ public class LibraryDAOImpl implements LibraryDAO
 							if (updateDate != 0) 
 							{
 								// Update book availability as false as we are issuing
-								//conn = dbConnector.getConnection();
-								String query4 = dbConnector.getQuery("setBookAvailability");
-								pstmt = conn.prepareStatement(query4);
+								query = dbConnector.getQuery("setBookAvailability");
+								pstmt = conn.prepareStatement(query);
 								pstmt.setInt(1, requestUserId);
 								pstmt.executeUpdate();
 
-
 								// Update User no of books borrowed
 								noOfBooksBorrowed++;
-								String query5 = dbConnector.getQuery("setNoOfBooksBorrowed");
-								pstmt = conn.prepareStatement(query5);
+								query = dbConnector.getQuery("setNoOfBooksBorrowed");
+								pstmt = conn.prepareStatement(query);
 								pstmt.setInt(1, noOfBooksBorrowed);
 								pstmt.setInt(2, requestUserId);
 								pstmt.executeUpdate();
@@ -415,6 +380,7 @@ public class LibraryDAOImpl implements LibraryDAO
 			} 
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new LMSException("Book Can't Be Removed or Deleted");
 
 		} finally {
@@ -542,8 +508,6 @@ public class LibraryDAOImpl implements LibraryDAO
 			if (rs.next() != false) {
 				int requestId = rs.getInt("rid");
 				System.out.println("Request Id....." + requestId);
-
-				//conn = dbConnector.getConnection();
 				query = dbConnector.getQuery("updateReturnDate");
 				pstmt = conn.prepareStatement(query);
 				pstmt.setInt(1, requestId);
@@ -614,7 +578,6 @@ public class LibraryDAOImpl implements LibraryDAO
 					while(resultSet.next()) {
 						noOfDaysDelayed = resultSet.getInt(1);
 					}
-					//System.out.println("No Of Days Delayed " + noOfDaysDelayed);
 
 					if (noOfDaysDelayed > 0) {
 						fine = noOfDaysDelayed * 5;
@@ -625,8 +588,7 @@ public class LibraryDAOImpl implements LibraryDAO
 
 						result = pstmt.executeUpdate();
 						if (result != 0) {
-							return true;
-							//System.out.println("fine updated" + fine);
+							System.out.println("fine updated   " + fine);
 						}
 					}
 					// Make available in library books
@@ -646,10 +608,7 @@ public class LibraryDAOImpl implements LibraryDAO
 					pstmt.setInt(1, rid);
 
 					result = pstmt.executeUpdate();
-
-
 					return true;
-
 				}
 
 			} // End Of While Loop

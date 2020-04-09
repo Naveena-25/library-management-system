@@ -8,7 +8,7 @@ public class BookDetails implements Serializable{
 	private String bookName;
 	private String author;
 	private String publisher;
-	private String isAvailable;
+	private boolean isAvailable;
 
 	public int getBookId() {
 		return bookId;
@@ -34,10 +34,10 @@ public class BookDetails implements Serializable{
 	public void setPublisher(String publisher) {
 		this.publisher = publisher;
 	}
-	public String isAvailable() {
+	public boolean isAvailable() {
 		return isAvailable;
 	}
-	public void setAvailable(String isAvailable) {
+	public void setAvailable(boolean isAvailable) {
 		this.isAvailable = isAvailable;
 	}
 }
