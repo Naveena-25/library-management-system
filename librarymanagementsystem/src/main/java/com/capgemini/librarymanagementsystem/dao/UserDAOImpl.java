@@ -6,89 +6,78 @@ import com.capgemini.librarymanagementsystem.db.DataBase;
 import com.capgemini.librarymanagementsystem.dto.BookDetails;
 import com.capgemini.librarymanagementsystem.dto.RequestInfo;
 import com.capgemini.librarymanagementsystem.dto.UserInfo;
-import com.capgemini.librarymanagementsystem.exception.Exception;
+import com.capgemini.librarymanagementsystem.exception.LMSException;
 
-public class UserDAOImpl implements UserDAO{
+public class UserDAOImpl implements UserDAO {
+
 	Date returnedDate = new Date();
 
 	@Override
-	public UserInfo userLogin(String email, String password) {
-		for(UserInfo info : DataBase.USER_INFOS) {
-			if(info.getEmail().equals(email)&& info.getPassword().equals(password)) {
-				return info;
+	public boolean userLogin(String emailId, String password) {
+		for (UserInfo userInfo : DataBase.USER_INFOS) {
+			if (userInfo.getEmailId().equals(emailId) && userInfo.getPassword().equals(password)) {
+				return true;
 			}
 		}
-		throw new Exception("Invalid user credentials");
+		throw new LMSException("Invalid user Credentials Please Enter Correctly");
 	}
 
 	@Override
 	public BookDetails search(int bookId) {
-		for(BookDetails bookInfo : DataBase.BOOK_DETAILS) {
-			if(bookInfo.getBookId()==bookId) {
+		for (BookDetails bookInfo : DataBase.BOOK_DETAILS) {
+			if (bookInfo.getBookId() == bookId) {
 				return bookInfo;
 			}
 		}
 
-		throw new Exception("No Book is Found");
+		throw new LMSException("Book is Not Found In The Library");
 
 	}
 
 	@Override
-	public RequestInfo bookRequest(UserInfo user,BookDetails bookDetails) {
-		boolean flag = false, isRequestExists = false;
+	public boolean bookRequest(int userId, int bookId) {
 		RequestInfo requestInfo = new RequestInfo();
-		UserInfo userInfo = new UserInfo();
-		BookDetails bookInfo = new BookDetails();
-
-		for (RequestInfo requestInfo2 : DataBase.REQUEST_INFOS) {
-			if (bookInfo.getBookId() == requestInfo2.getBookdetails().getBookId()) {
+		boolean isRequestExists = false;
+		for (RequestInfo info : DataBase.REQUEST_INFOS) {
+			if (bookId == info.getBookId()) {
 				isRequestExists = true;
-
 			}
-
 		}
 
-
 		if (!isRequestExists) {
-			for (UserInfo userInfo1 : DataBase.USER_INFOS) {
-				if (user.getUserId() == userInfo1.getUserId()) {
-					for (BookDetails bookInfo1 : DataBase.BOOK_DETAILS) {
-						if (bookInfo1.getBookId() == bookDetails.getBookId()) {		
-							userInfo = userInfo1;
-							bookInfo = bookInfo1;
-							flag = true; 
-							break;
+			for (UserInfo user : DataBase.USER_INFOS) {
+				if (userId == user.getUserId()) {
+					for (BookDetails book : DataBase.BOOK_DETAILS) {
+						if ((book.getBookId() == bookId) && (book.isAvailable() == true)) {
+							requestInfo.setBookId(bookId);
+							requestInfo.setUserId(userId);
+							requestInfo.setIssued(false);
+							DataBase.REQUEST_INFOS.add(requestInfo);
+							return true;
 						}
 					}
 				}
-
 			}
 		}
-		if (flag == true) {
-			requestInfo.setBookdetails(bookInfo);
-			requestInfo.setUserInfo(userInfo);
-			DataBase.REQUEST_INFOS.add(requestInfo);
-			return requestInfo;
-		}
-		throw new Exception("Invalid request or you cannot request that book");
+
+		throw new LMSException("Request Can't be place to Admin");
 	}
 
 	@Override
-	public RequestInfo bookReturn(UserInfo userdetails,BookDetails bookdetails) {
+	public boolean bookReturn(int userId, int bookId) {
 
 		for (RequestInfo requestInfo : DataBase.REQUEST_INFOS) {
 
-			if (requestInfo.getBookdetails().getBookId() == bookdetails.getBookId() &&
-					requestInfo.getUserInfo().getUserId() == userdetails.getUserId() &&
-					requestInfo.isIssued() == true) {
+			if ((requestInfo.getBookId() == bookId) && (requestInfo.getUserId() == userId)
+					&& (requestInfo.isIssued() == true)) {
 				requestInfo.setReturned(true);
 				requestInfo.setReturnedDate(returnedDate);
-				return requestInfo;
+				return true;
 			}
 
 		}
 
-		throw new Exception("Invalid Book return");
+		throw new LMSException("Invalid Book Return");
 	}
 
 }

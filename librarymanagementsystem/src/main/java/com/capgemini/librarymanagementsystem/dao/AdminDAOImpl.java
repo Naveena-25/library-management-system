@@ -1,6 +1,5 @@
 package com.capgemini.librarymanagementsystem.dao;
 
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -11,66 +10,73 @@ import com.capgemini.librarymanagementsystem.dto.AdminInfo;
 import com.capgemini.librarymanagementsystem.dto.BookDetails;
 import com.capgemini.librarymanagementsystem.dto.RequestInfo;
 import com.capgemini.librarymanagementsystem.dto.UserInfo;
-import com.capgemini.librarymanagementsystem.exception.Exception;
+import com.capgemini.librarymanagementsystem.exception.LMSException;
 
-public class AdminDAOImpl implements AdminDAO{
+public class AdminDAOImpl implements AdminDAO {
 	Date date = new Date();
 	Date expectedReturnDate = new Date();
 	Calendar calendar = Calendar.getInstance();
 
 	@Override
-	public AdminInfo auth(String adminEmail, String password) {
-		AdminInfo details = new AdminInfo();
-		if(details.getAdminEmail().equals(adminEmail)&& details.getPassword().equals(password)) {
-			return details;
+	public boolean authentication(String adminEmail, String password) {
+		AdminInfo adminInfo = new AdminInfo();
+		if (adminInfo.getEmailId().equals(adminEmail) && adminInfo.getPassword().equals(password)) {
+			return true;
 		}
-		throw new Exception("Invalid Admin Credentials");
+		throw new LMSException("Invalid Admin Credentials");
 	}
+
 	@Override
 	public boolean addUser(UserInfo userInfo) {
-		for(UserInfo user : DataBase.USER_INFOS) {
-			if(user.getUserId()==userInfo.getUserId() || user.getEmail().equalsIgnoreCase(userInfo.getEmail())) {
-				throw new Exception("Cannot add user, as user already exists in the DB");
+		for (UserInfo user : DataBase.USER_INFOS) {
+			if (user.getUserId() == userInfo.getUserId() || user.getEmailId().equalsIgnoreCase(userInfo.getEmailId())) {
+				throw new LMSException("Cannot add New User, as User Already Exists");
 			}
-		} DataBase.USER_INFOS.add(userInfo);
+		}
+		DataBase.USER_INFOS.add(userInfo);
 		return true;
 	}
+
 	@Override
 	public List<UserInfo> showUsers() {
 		List<UserInfo> userList = new LinkedList<UserInfo>();
 		for (UserInfo user : DataBase.USER_INFOS) {
 			user.getUserId();
 			user.getUserName();
-			user.getEmail();
+			user.getEmailId();
 			user.getPassword();
 			user.getMobileNumber();
 			userList.add(user);
 		}
 		return userList;
+
 	}
 
+	@Override
 	public BookDetails search(int bookId) {
-		for(BookDetails book : DataBase.BOOK_DETAILS) {
-			if(book.getBookId()==bookId) {
+		for (BookDetails book : DataBase.BOOK_DETAILS) {
+			if (book.getBookId() == bookId) {
 				return book;
 			}
 		}
-		throw new Exception("invalid Search");
+		throw new LMSException("Book is Not Found In The Library");
 	}
 
 	@Override
 	public boolean addBook(BookDetails details) {
 		boolean add = true;
 		for (BookDetails bookInfo : DataBase.BOOK_DETAILS) {
-			if(bookInfo.getBookId()==details.getBookId()) {
-				throw new Exception("Book Can't Be Added, As Book is Already Exists");
+			if (bookInfo.getBookId() == details.getBookId()) {
+				throw new LMSException("Book Can't Be Added, As Book is Already Exists");
 			}
 		}
 		DataBase.BOOK_DETAILS.add(details);
 		return add;
 	}
+
 	@Override
 	public List<BookDetails> showBooks() {
+
 		List<BookDetails> books = new LinkedList<BookDetails>();
 		for (BookDetails bookDetails : DataBase.BOOK_DETAILS) {
 			bookDetails.getBookId();
@@ -84,127 +90,116 @@ public class AdminDAOImpl implements AdminDAO{
 
 	@Override
 	public List<RequestInfo> showRequests() {
-		List<RequestInfo> requestList = new LinkedList<RequestInfo>();
+		List<RequestInfo> requestsList = new LinkedList<RequestInfo>();
+
 		for (RequestInfo requestInfo : DataBase.REQUEST_INFOS) {
-			requestInfo.getBookdetails();
-			requestInfo.getUserInfo();
+			requestInfo.getBookId();
+			requestInfo.getUserId();
 			requestInfo.isIssued();
 			requestInfo.isReturned();
-			requestInfo.getReturnedDate();
-			requestList.add(requestInfo);
+			requestsList.add(requestInfo);
 		}
-		return requestList;
-
+		return requestsList;
 	}
 
-
 	@Override
-	public boolean issueBook(UserInfo user, BookDetails bookDetails) {
-		boolean isValid = false;
+	public boolean issueBook(int userId, int bookId) {
+
+		UserInfo user = new UserInfo();
+		BookDetails book = new BookDetails();
+		RequestInfo requestInfo = new RequestInfo();
+		int noOfBooksBorrowed = 0;
+		boolean isValidRequest = false;
 		calendar.add(Calendar.DATE, 15);
 		expectedReturnDate = calendar.getTime();
 
-		RequestInfo requestInfo = new RequestInfo();
-		int noOfBooksBorrowed = user.getNoOfBooksBorrowed();
 		for (RequestInfo info : DataBase.REQUEST_INFOS) {
-			if (info.getUserInfo().getUserId() == user.getUserId()) {
-				if (info.getBookdetails().getBookId() == bookDetails.getBookId()) {
+			if (info.getUserId() == userId) {
+				if (info.getBookId() == bookId) {
+					isValidRequest = true;
 					requestInfo = info;
-					isValid = true;
 				}
 			}
 		}
 
-		if (isValid) {
-			for (BookDetails info2 : DataBase.BOOK_DETAILS) {
-				if (info2.getBookId() == bookDetails.getBookId()) {
-					bookDetails = info2;
+		if (isValidRequest) {
+			for (BookDetails bookDetails : DataBase.BOOK_DETAILS) {
+				if (bookDetails.getBookId() == bookId) {
+					book = bookDetails;
 				}
 			}
-			for (UserInfo userInfo2 : DataBase.USER_INFOS) {
-				if (userInfo2.getUserId() == user.getUserId()) {
-					user = userInfo2;
+
+			for (UserInfo userInfo : DataBase.USER_INFOS) {
+				if (userInfo.getUserId() == userId) {
+					user = userInfo;
 					noOfBooksBorrowed = user.getNoOfBooksBorrowed();
-
 				}
-
 			}
 
 			if (noOfBooksBorrowed < 3) {
-				boolean isRemoved = DataBase.BOOK_DETAILS.remove(bookDetails);
-				if (isRemoved) {
-					noOfBooksBorrowed++;
-					System.out.println(noOfBooksBorrowed);
-					user.setNoOfBooksBorrowed(noOfBooksBorrowed);
-					requestInfo.setIssued(true);
-					requestInfo.setIssueDate(date);
-					requestInfo.setReturnDate(expectedReturnDate);
-					requestInfo.setIssued(true);
-					return true;
-				} else {
-					throw new Exception("Book can't be borrowed");
-				}
-
+				book.setAvailable(false);
+				noOfBooksBorrowed++;
+				user.setNoOfBooksBorrowed(noOfBooksBorrowed);
+				requestInfo.setIssued(true);
+				requestInfo.setIssueDate(date);
+				requestInfo.setExpectedReturnDate(expectedReturnDate);
+				return true;
 			} else {
-				throw new Exception("Student Exceeds maximum limit");
+				throw new LMSException("Student Exceeds maximum Borrowing limit");
 			}
 
 		} else {
-			throw new Exception("Book data or User data is incorrect");
-
+			throw new LMSException("Book Can't Be Issued");
 		}
 	}
 
 	@Override
-	public boolean removebook(BookDetails bookDetails) {
-		boolean isExist=false;
-		BookDetails bookInfo1 = null;
-		for (BookDetails bookInfo : DataBase.BOOK_DETAILS) {	
-			if(bookInfo.getBookId() == bookDetails.getBookId()) 
-			{
-				bookInfo1 = bookInfo;
-				isExist = true;
+	public boolean removeBook(int bookId) {
+		for (BookDetails bookDetails : DataBase.BOOK_DETAILS) {
+			if (bookDetails.getBookId() == bookId) {
+				DataBase.BOOK_DETAILS.remove(bookDetails);
+				return true;
 			}
-		} if(isExist) {
-			DataBase.BOOK_DETAILS.remove(bookInfo1);
-			return true;
 		}
-		throw new Exception("Unable To Remove The Book");
+		throw new LMSException("Unable To Remove The Book");
 	}
 
 	@Override
-	public boolean receivedBook(UserInfo user, BookDetails bookDetails) {
-		boolean isValid = false;
-		RequestInfo requestInfo1 = new RequestInfo();
-		for (RequestInfo requestInfo : DataBase.REQUEST_INFOS) {
-			if (requestInfo.getBookdetails().getBookId() == bookDetails.getBookId()
-					&& requestInfo.getUserInfo().getUserId() == user.getUserId() && requestInfo.isReturned() == true) {
-				isValid = true;
-				requestInfo1 = requestInfo;
+	public boolean receiveBook(int userId, int bookId) {
+		boolean isValidReceive = false;
+		int noOfBooksBorrowed;
+
+		RequestInfo requestInfo = new RequestInfo();
+
+		for (RequestInfo requestInfo1 : DataBase.REQUEST_INFOS) {
+			if ((requestInfo1.getBookId() == bookId) && (requestInfo1.getUserId() == userId)
+					&& (requestInfo1.isReturned() == true)) {
+				isValidReceive = true;
+				requestInfo = requestInfo1;
 			}
 		}
-		if (isValid) {
 
-			bookDetails.setBookName(requestInfo1.getBookdetails().getBookName());
-			bookDetails.setAuthor(requestInfo1.getBookdetails().getAuthor());
-			bookDetails.setPublisherName(requestInfo1.getBookdetails().getPublisherName());
-			DataBase.BOOK_DETAILS.add(bookDetails);
-			DataBase.REQUEST_INFOS.remove(requestInfo1);
-
-
-			for (UserInfo userInfo2 : DataBase.USER_INFOS) {
-				if (userInfo2.getUserId() == user.getUserId()) {
-					user = userInfo2;
+		if (isValidReceive) {
+			for (BookDetails bookDetails : DataBase.BOOK_DETAILS) {
+				if (bookDetails.getBookId() == bookId) {
+					bookDetails.setAvailable(true);
+					break;
 				}
-
 			}
-			int noOfBooksBorrowed = user.getNoOfBooksBorrowed();
-			noOfBooksBorrowed--;
-			user.setNoOfBooksBorrowed(noOfBooksBorrowed);
-			return true;
 
+			for (UserInfo userInfo : DataBase.USER_INFOS) {
+				if (userInfo.getUserId() == userId) {
+					noOfBooksBorrowed = userInfo.getNoOfBooksBorrowed();
+					noOfBooksBorrowed--;
+					userInfo.setNoOfBooksBorrowed(noOfBooksBorrowed);
+					break;
+				}
+			}
+
+			DataBase.REQUEST_INFOS.remove(requestInfo);
+			return true;
 		}
 
-		throw new Exception("Book is Not Recieved");
+		throw new LMSException("Book is Not Received ");
 	}
 }

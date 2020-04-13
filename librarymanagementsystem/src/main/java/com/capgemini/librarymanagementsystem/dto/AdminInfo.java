@@ -2,20 +2,23 @@ package com.capgemini.librarymanagementsystem.dto;
 
 import java.io.Serializable;
 
-public class AdminInfo implements Serializable{
+public class AdminInfo implements Serializable {
 
-	private String adminEmail="admin@gmail.com";
-	private String password="admin123";
+	private String emailId = "admin@gmail.com";
+	private String password = "Admin@1";
 
-	public String getAdminEmail() {
-		return adminEmail;
+	public String getEmailId() {
+		return emailId;
 	}
-	public void setAdminEmail(String adminEmail) {
-		this.adminEmail = adminEmail;
+
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
 	}
+
 	public String getPassword() {
 		return password;
 	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
