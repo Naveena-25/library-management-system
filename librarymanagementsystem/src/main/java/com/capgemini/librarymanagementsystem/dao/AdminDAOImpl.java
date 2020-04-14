@@ -144,7 +144,9 @@ public class AdminDAOImpl implements AdminDAO {
 				requestInfo.setIssueDate(date);
 				requestInfo.setExpectedReturnDate(expectedReturnDate);
 				return true;
+				
 			} else {
+				DataBase.REQUEST_INFOS.remove(requestInfo);
 				throw new LMSException("Student Exceeds maximum Borrowing limit");
 			}
 
