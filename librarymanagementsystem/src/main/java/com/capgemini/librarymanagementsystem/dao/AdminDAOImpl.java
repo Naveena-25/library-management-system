@@ -48,6 +48,9 @@ public class AdminDAOImpl implements AdminDAO {
 			user.getMobileNumber();
 			userList.add(user);
 		}
+		if(userList.isEmpty()) {
+			throw new LMSException("No Users Found In The Database");
+		}
 		return userList;
 
 	}
@@ -85,6 +88,9 @@ public class AdminDAOImpl implements AdminDAO {
 			bookDetails.getPublisherName();
 			books.add(bookDetails);
 		}
+		if(books.isEmpty()) {
+			throw new LMSException("No Books Found In The Database");
+		}
 		return books;
 	}
 
@@ -99,7 +105,11 @@ public class AdminDAOImpl implements AdminDAO {
 			requestInfo.isReturned();
 			requestsList.add(requestInfo);
 		}
+		if(requestsList.isEmpty()) {
+			throw new LMSException("No Requests Found In The Database");
+		} else {
 		return requestsList;
+		}
 	}
 
 	@Override

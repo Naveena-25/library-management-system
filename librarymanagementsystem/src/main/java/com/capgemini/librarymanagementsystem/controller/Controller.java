@@ -213,8 +213,9 @@ public class Controller {
 							break;
 
 						case 2:
+							try {
 							List<UserInfo> userList = service.showUsers();
-
+							
 							for (UserInfo userInfo : userList) {
 								System.out.println("Show user list present in database");
 								System.out.println("User Id....................." + userInfo.getUserId());
@@ -223,6 +224,9 @@ public class Controller {
 								System.out.println("Password...................." + userInfo.getPassword());
 								System.out.println("User mobile Number.........." + userInfo.getMobileNumber());
 								System.out.println("Number of books Borrowed...." + userInfo.getNoOfBooksBorrowed());
+							}
+							} catch (LMSException e) {
+								System.err.println(e.getMessage());
 							}
 							break;
 
@@ -270,8 +274,8 @@ public class Controller {
 							break;
 
 						case 5:
-							List<BookDetails> list = service.showBooks();
-
+							try {
+							List<BookDetails> list = service.showBooks();						
 							for (BookDetails books : list) {
 								System.out.println("Books present in Database are ");
 								System.out.println("BookId..............." + books.getBookId());
@@ -281,10 +285,14 @@ public class Controller {
 								System.out.println("Availability........." + books.isAvailable());
 								System.out.println("-------------------------------");
 							}
+							} catch (LMSException e) {
+								System.err.println(e.getMessage());
+							}
 							break;
 
 						case 6:
 							System.out.println("Requested Books are :");
+							try {
 							List<RequestInfo> requestlist = service.showRequests();
 							for (RequestInfo info : requestlist) {
 
@@ -296,6 +304,9 @@ public class Controller {
 								System.out.println("Book Issued..............." + info.isIssued());
 								System.out.println("Book Returned............." + info.isReturned());
 								System.out.println("-------------------------------");
+							}
+							} catch (LMSException e) {
+								System.err.println(e.getMessage());
 							}
 							break;
 
@@ -395,16 +406,20 @@ public class Controller {
 							break;
 
 						case 2:
+							try {
 							List<BookDetails> list = service.showBooks();
-
-							for (BookDetails books : list) {
-								System.out.println("Books present in database..");
-								System.out.println("Book Id..............." + books.getBookId());
-								System.out.println("Book Name............." + books.getBookName());
-								System.out.println("Author................" + books.getAuthor());
-								System.out.println("Book Publisher........" + books.getPublisherName());
-								System.out.println("Availability.........." + books.isAvailable());
-								System.out.println("-------------------------------");
+						
+								for (BookDetails books : list) {
+									System.out.println("Books present in database..");
+									System.out.println("Book Id..............." + books.getBookId());
+									System.out.println("Book Name............." + books.getBookName());
+									System.out.println("Author................" + books.getAuthor());
+									System.out.println("Book Publisher........" + books.getPublisherName());
+									System.out.println("Availability.........." + books.isAvailable());
+									System.out.println("-------------------------------");
+								}
+							} catch (LMSException e) {
+								System.err.println(e.getMessage());
 							}
 							break;
 
