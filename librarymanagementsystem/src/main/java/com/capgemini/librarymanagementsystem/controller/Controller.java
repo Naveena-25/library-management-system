@@ -15,8 +15,8 @@ import com.capgemini.librarymanagementsystem.validation.Validation;
 
 public class Controller {
 
-	public static final AdminService service = Factory.getAdminService();
-	public static final UserService userService = Factory.getUserService();
+	private static final AdminService service = Factory.getAdminService();
+	private static final UserService userService = Factory.getUserService();
 	private static final Validation VALIDATION = new Validation();
 	public static Scanner scanner = new Scanner(System.in);
 
@@ -214,17 +214,17 @@ public class Controller {
 
 						case 2:
 							try {
-							List<UserInfo> userList = service.showUsers();
-							
-							for (UserInfo userInfo : userList) {
-								System.out.println("Show user list present in database");
-								System.out.println("User Id....................." + userInfo.getUserId());
-								System.out.println("User Name..................." + userInfo.getUserName());
-								System.out.println("Email Id...................." + userInfo.getEmailId());
-								System.out.println("Password...................." + userInfo.getPassword());
-								System.out.println("User mobile Number.........." + userInfo.getMobileNumber());
-								System.out.println("Number of books Borrowed...." + userInfo.getNoOfBooksBorrowed());
-							}
+								List<UserInfo> userList = service.showUsers();
+
+								for (UserInfo userInfo : userList) {
+									System.out.println("Show user list present in database");
+									System.out.println("User Id....................." + userInfo.getUserId());
+									System.out.println("User Name..................." + userInfo.getUserName());
+									System.out.println("Email Id...................." + userInfo.getEmailId());
+									System.out.println("Password...................." + userInfo.getPassword());
+									System.out.println("User mobile Number.........." + userInfo.getMobileNumber());
+									System.out.println("Number of books Borrowed...." + userInfo.getNoOfBooksBorrowed());
+								}
 							} catch (LMSException e) {
 								System.err.println(e.getMessage());
 							}
@@ -275,16 +275,16 @@ public class Controller {
 
 						case 5:
 							try {
-							List<BookDetails> list = service.showBooks();						
-							for (BookDetails books : list) {
-								System.out.println("Books present in Database are ");
-								System.out.println("BookId..............." + books.getBookId());
-								System.out.println("BookName............." + books.getBookName());
-								System.out.println("BookAuthor..........." + books.getAuthor());
-								System.out.println("Book Publisher......." + books.getPublisherName());
-								System.out.println("Availability........." + books.isAvailable());
-								System.out.println("-------------------------------");
-							}
+								List<BookDetails> list = service.showBooks();						
+								for (BookDetails books : list) {
+									System.out.println("Books present in Database are ");
+									System.out.println("BookId..............." + books.getBookId());
+									System.out.println("BookName............." + books.getBookName());
+									System.out.println("BookAuthor..........." + books.getAuthor());
+									System.out.println("Book Publisher......." + books.getPublisherName());
+									System.out.println("Availability........." + books.isAvailable());
+									System.out.println("-------------------------------");
+								}
 							} catch (LMSException e) {
 								System.err.println(e.getMessage());
 							}
@@ -293,18 +293,18 @@ public class Controller {
 						case 6:
 							System.out.println("Requested Books are :");
 							try {
-							List<RequestInfo> requestlist = service.showRequests();
-							for (RequestInfo info : requestlist) {
+								List<RequestInfo> requestlist = service.showRequests();
+								for (RequestInfo info : requestlist) {
 
-								System.out.println("Book id .................." + info.getBookId());
-								System.out.println("User id.................. " + info.getUserId());
-								System.out.println("Issue Date................" + info.getIssueDate());
-								System.out.println("Expected Return Date......" + info.getExpectedReturnDate());
-								System.out.println("Returned Date............." + info.getReturnedDate());
-								System.out.println("Book Issued..............." + info.isIssued());
-								System.out.println("Book Returned............." + info.isReturned());
-								System.out.println("-------------------------------");
-							}
+									System.out.println("Book id .................." + info.getBookId());
+									System.out.println("User id.................. " + info.getUserId());
+									System.out.println("Issue Date................" + info.getIssueDate());
+									System.out.println("Expected Return Date......" + info.getExpectedReturnDate());
+									System.out.println("Returned Date............." + info.getReturnedDate());
+									System.out.println("Book Issued..............." + info.isIssued());
+									System.out.println("Book Returned............." + info.isReturned());
+									System.out.println("-------------------------------");
+								}
 							} catch (LMSException e) {
 								System.err.println(e.getMessage());
 							}
@@ -407,8 +407,8 @@ public class Controller {
 
 						case 2:
 							try {
-							List<BookDetails> list = service.showBooks();
-						
+								List<BookDetails> list = service.showBooks();
+
 								for (BookDetails books : list) {
 									System.out.println("Books present in database..");
 									System.out.println("Book Id..............." + books.getBookId());

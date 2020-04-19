@@ -17,9 +17,7 @@ public class DBConnector {
 			conn = DriverManager.getConnection(properties.getProperty("dburl"));
 
 			return conn;
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -35,8 +33,7 @@ public class DBConnector {
 			query = properties.getProperty(baseQuery);
 
 			return query;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
