@@ -56,7 +56,6 @@ public class Controller {
 				System.err.println(e.getMessage());
 			}
 		} while (!flag);
-
 		return id;
 	}
 
@@ -136,6 +135,22 @@ public class Controller {
 		return mobileNumber;
 	}
 
+	private static boolean checkAvailability() {
+		boolean isAvailable = false;
+		boolean flag = false;
+		do {
+			try {
+				isAvailable = scanner.nextBoolean();
+				flag = true;
+			} catch (InputMismatchException e) {
+				System.err.println("Enter Boolean value either True or False");
+				flag = false;
+				scanner.next();
+			}
+		} while (!flag);
+		return isAvailable;
+	}
+
 	public static void main(String[] args) {
 
 		BookDetails book;
@@ -149,7 +164,10 @@ public class Controller {
 		String name = null;
 		String emailId = null;
 		String password = null;
+		String newPassword = null;
 		String mobileNumber = null;
+		boolean isAvailable = false;
+
 		do {
 			System.out.println("********Welcome To Library Management System*************");
 			System.out.println("Press 1 For Admin Login");
@@ -213,17 +231,17 @@ public class Controller {
 							break;
 
 						case 2:
+							
 							try {
 								List<UserInfo> userList = service.showUsers();
-
+								System.out.println("Users Present in Database are:");
 								for (UserInfo userInfo : userList) {
-									System.out.println("Show user list present in database");
 									System.out.println("User Id....................." + userInfo.getUserId());
 									System.out.println("User Name..................." + userInfo.getUserName());
 									System.out.println("Email Id...................." + userInfo.getEmailId());
-									System.out.println("Password...................." + userInfo.getPassword());
-									System.out.println("User mobile Number.........." + userInfo.getMobileNumber());
-									System.out.println("Number of books Borrowed...." + userInfo.getNoOfBooksBorrowed());
+									System.out.println("Mobile Number..............." + userInfo.getMobileNumber());
+									System.out.println("Number of BooksBorrowed....." + userInfo.getNoOfBooksBorrowed());
+									System.out.println("Fine........................" + userInfo.getFine());
 								}
 							} catch (LMSException e) {
 								System.err.println(e.getMessage());
@@ -259,7 +277,8 @@ public class Controller {
 							System.out.println("Enter the Publisher Name");
 							name = checkName();
 							System.out.println("Enter Book Availability");
-							boolean isAvailable = scanner.nextBoolean();
+							isAvailable = checkAvailability();
+
 							book.setBookId(bookId);
 							book.setBookName(name);
 							book.setAuthor(name);
@@ -275,9 +294,9 @@ public class Controller {
 
 						case 5:
 							try {
-								List<BookDetails> list = service.showBooks();						
+								List<BookDetails> list = service.showBooks();
+								System.out.println("Books present in Database are ");
 								for (BookDetails books : list) {
-									System.out.println("Books present in Database are ");
 									System.out.println("BookId..............." + books.getBookId());
 									System.out.println("BookName............." + books.getBookName());
 									System.out.println("BookAuthor..........." + books.getAuthor());
@@ -291,11 +310,10 @@ public class Controller {
 							break;
 
 						case 6:
-							System.out.println("Requested Books are :");
 							try {
 								List<RequestInfo> requestlist = service.showRequests();
+								System.out.println("Requested Books are :");
 								for (RequestInfo info : requestlist) {
-
 									System.out.println("Book id .................." + info.getBookId());
 									System.out.println("User id.................. " + info.getUserId());
 									System.out.println("Issue Date................" + info.getIssueDate());
@@ -379,16 +397,36 @@ public class Controller {
 					userService.userLogin(emailId, password);
 					System.out.println("User LoggedIn successfully");
 					do {
-
-						System.out.println("Press 1 to Search");
-						System.out.println("Press 2 to Show Books");
-						System.out.println("Press 3 to Book Request");
-						System.out.println("Press 4 to Return Book");
+						System.out.println("Press 1 to Change Password");
+						System.out.println("Press 2 to Search");
+						System.out.println("Press 3 to Show Books");
+						System.out.println("Press 4 to Book Request");
+						System.out.println("Press 5 to Return Book");
 						System.out.println("Press 0 to Logout");
 						System.out.println("Enter choice");
 						userChoice = checkChoice();
 						switch (userChoice) {
+						
 						case 1:
+							System.out.println("Change Password");
+							System.out.println("-------------------");
+							System.out.println("Enter User Id");
+							emailId = checkEmailId();
+							scanner.nextLine();
+							System.out.println("Enter Old Password");
+							password = checkPassword();
+							System.out.println("Enter New Password");
+							newPassword = checkPassword();
+
+							try {
+								userService.changePassword(emailId, password, newPassword);
+								System.out.println("Password Changed Sucessfully");
+							} catch (LMSException e) {
+								System.err.println(e.getMessage());
+							}
+							break;
+
+						case 2:
 							System.out.println("Search Book by bookId");
 							System.out.println("Enter the BookId ");
 							int searchId = checkId();
@@ -405,7 +443,7 @@ public class Controller {
 							}
 							break;
 
-						case 2:
+						case 3:
 							try {
 								List<BookDetails> list = service.showBooks();
 
@@ -423,7 +461,7 @@ public class Controller {
 							}
 							break;
 
-						case 3:
+						case 4:
 							System.out.println("Enter Book Id");
 							bookId = checkId();
 							System.out.println("Enter User Id");
@@ -438,7 +476,7 @@ public class Controller {
 							}
 							break;
 
-						case 4:
+						case 5:
 
 							System.out.println("Returning a book:");
 							System.out.println("Enter User Id");

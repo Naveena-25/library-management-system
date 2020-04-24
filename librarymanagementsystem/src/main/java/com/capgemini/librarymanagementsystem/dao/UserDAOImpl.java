@@ -1,5 +1,6 @@
 package com.capgemini.librarymanagementsystem.dao;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import com.capgemini.librarymanagementsystem.db.DataBase;
@@ -10,7 +11,7 @@ import com.capgemini.librarymanagementsystem.exception.LMSException;
 
 public class UserDAOImpl implements UserDAO {
 
-	Date returnedDate = new Date();
+	Date returnedDate;
 
 	@Override
 	public boolean userLogin(String emailId, String password) {
@@ -20,6 +21,18 @@ public class UserDAOImpl implements UserDAO {
 			}
 		}
 		throw new LMSException("Invalid user Credentials Please Enter Correctly");
+	}
+
+	@Override
+	public boolean changePassword(String emailId, String oldPassword, String newPassword) {
+		for (UserInfo userInfo : DataBase.USER_INFOS) {
+			if ((userInfo.getEmailId().equals(emailId)) && (userInfo.getPassword().equals(oldPassword))) {
+				userInfo.setPassword(newPassword);
+				return true;
+			}
+		}
+
+		throw new LMSException("Password Can't be Changed Due To Invalid Credentials");
 	}
 
 	@Override
@@ -65,6 +78,9 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public boolean bookReturn(int userId, int bookId) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, 20);
+		returnedDate = calendar.getTime();
 
 		for (RequestInfo requestInfo : DataBase.REQUEST_INFOS) {
 

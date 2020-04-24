@@ -15,6 +15,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public boolean changePassword(String emailId, String oldPassword, String newPassword) {
+		
+		return dao.changePassword(emailId, oldPassword, newPassword);
+	}
+
+	@Override
 	public BookDetails search(int bookId) {
 
 		return dao.search(bookId);

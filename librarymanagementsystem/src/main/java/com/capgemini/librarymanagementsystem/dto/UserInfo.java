@@ -10,6 +10,7 @@ public class UserInfo implements Serializable {
 	private String password;
 	private String mobileNumber;
 	private int noOfBooksBorrowed;
+	private double fine;
 
 	public int getUserId() {
 		return userId;
@@ -57,5 +58,13 @@ public class UserInfo implements Serializable {
 
 	public void setNoOfBooksBorrowed(int noOfBooksBorrowed) {
 		this.noOfBooksBorrowed = noOfBooksBorrowed;
+	}
+
+	public double getFine() {
+		return fine;
+	}
+
+	public void setFine(double fine) {
+		this.fine = fine;
 	}
 }

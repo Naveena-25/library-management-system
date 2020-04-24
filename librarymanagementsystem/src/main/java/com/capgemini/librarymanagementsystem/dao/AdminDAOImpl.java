@@ -14,8 +14,8 @@ import com.capgemini.librarymanagementsystem.exception.LMSException;
 
 public class AdminDAOImpl implements AdminDAO {
 	Date date = new Date();
-	Date expectedReturnDate = new Date();
-	Calendar calendar = Calendar.getInstance();
+	Date expectedReturnDate;
+	Date returnedDate;
 
 	@Override
 	public boolean authentication(String adminEmail, String password) {
@@ -48,7 +48,7 @@ public class AdminDAOImpl implements AdminDAO {
 			user.getMobileNumber();
 			userList.add(user);
 		}
-		if(userList.isEmpty()) {
+		if (userList.isEmpty()) {
 			throw new LMSException("No Users Found In The Database");
 		}
 		return userList;
@@ -88,7 +88,7 @@ public class AdminDAOImpl implements AdminDAO {
 			bookDetails.getPublisherName();
 			books.add(bookDetails);
 		}
-		if(books.isEmpty()) {
+		if (books.isEmpty()) {
 			throw new LMSException("No Books Found In The Database");
 		}
 		return books;
@@ -105,10 +105,10 @@ public class AdminDAOImpl implements AdminDAO {
 			requestInfo.isReturned();
 			requestsList.add(requestInfo);
 		}
-		if(requestsList.isEmpty()) {
+		if (requestsList.isEmpty()) {
 			throw new LMSException("No Requests Found In The Database");
 		} else {
-		return requestsList;
+			return requestsList;
 		}
 	}
 
@@ -120,6 +120,7 @@ public class AdminDAOImpl implements AdminDAO {
 		RequestInfo requestInfo = new RequestInfo();
 		int noOfBooksBorrowed = 0;
 		boolean isValidRequest = false;
+		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, 15);
 		expectedReturnDate = calendar.getTime();
 
@@ -154,7 +155,7 @@ public class AdminDAOImpl implements AdminDAO {
 				requestInfo.setIssueDate(date);
 				requestInfo.setExpectedReturnDate(expectedReturnDate);
 				return true;
-				
+
 			} else {
 				DataBase.REQUEST_INFOS.remove(requestInfo);
 				throw new LMSException("Student Exceeds maximum Borrowing limit");
@@ -180,18 +181,24 @@ public class AdminDAOImpl implements AdminDAO {
 	public boolean receiveBook(int userId, int bookId) {
 		boolean isValidReceive = false;
 		int noOfBooksBorrowed;
-
+		double fine;
 		RequestInfo requestInfo = new RequestInfo();
 
 		for (RequestInfo requestInfo1 : DataBase.REQUEST_INFOS) {
 			if ((requestInfo1.getBookId() == bookId) && (requestInfo1.getUserId() == userId)
 					&& (requestInfo1.isReturned() == true)) {
 				isValidReceive = true;
+				expectedReturnDate = requestInfo1.getExpectedReturnDate();
+				returnedDate = requestInfo1.getReturnedDate();
 				requestInfo = requestInfo1;
 			}
 		}
 
 		if (isValidReceive) {
+			long expReturnDateInMilliSecs = expectedReturnDate.getTime();
+			long returnedDateInMilliSecs = returnedDate.getTime();
+			long diffInMilliSecs = returnedDateInMilliSecs - expReturnDateInMilliSecs;
+			int NoOfDaysDelayed = (int) (diffInMilliSecs / (24 * 60 * 60 * 1000));
 			for (BookDetails bookDetails : DataBase.BOOK_DETAILS) {
 				if (bookDetails.getBookId() == bookId) {
 					bookDetails.setAvailable(true);
@@ -204,6 +211,11 @@ public class AdminDAOImpl implements AdminDAO {
 					noOfBooksBorrowed = userInfo.getNoOfBooksBorrowed();
 					noOfBooksBorrowed--;
 					userInfo.setNoOfBooksBorrowed(noOfBooksBorrowed);
+					fine = userInfo.getFine();
+					if (NoOfDaysDelayed > 0) {
+						fine = fine + (NoOfDaysDelayed * 5);
+					}
+					userInfo.setFine(fine);
 					break;
 				}
 			}
