@@ -3,7 +3,6 @@ package com.capgemini.librarymanagementjdbc.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Date;
 import java.util.LinkedList;
@@ -20,7 +19,7 @@ public class LibraryDAOImpl implements LibraryDAO {
 
 	@Override
 	public LibraryUsers login(String emailId, String password) {
-		LibraryUsers adminDetails = new LibraryUsers();
+		LibraryUsers libraryUsers = new LibraryUsers();
 
 		try (Connection conn = dbConnector.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(dbConnector.getQuery("loginCheckAdmin"));) {
@@ -28,22 +27,22 @@ public class LibraryDAOImpl implements LibraryDAO {
 			pstmt.setString(2, password);
 			try (ResultSet rs = pstmt.executeQuery();) {
 				while (rs.next()) {
-					adminDetails.setEmailId(rs.getString("email_id"));
-					adminDetails.setPassword(rs.getString("password"));
+					libraryUsers.setEmailId(rs.getString("email_id"));
+					libraryUsers.setPassword(rs.getString("password"));
 
-					return adminDetails;
+					return libraryUsers;
 				}
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		throw new LMSException("Invalid Credentials Please Enter Correctly");
+		throw new LMSException("Invalid Login Credentials, Please Enter Correctly");
 	}
 
 	@Override
 	public boolean addUser(LibraryUsers info) {
 		try (Connection conn = dbConnector.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(dbConnector.getQuery("insertUser"));) {
+				PreparedStatement pstmt = conn.prepareStatement(dbConnector.getQuery("addUser"));) {
 			pstmt.setInt(1, info.getId());
 			pstmt.setString(2, info.getUserName());
 			pstmt.setString(3, info.getEmailId());
@@ -51,15 +50,12 @@ public class LibraryDAOImpl implements LibraryDAO {
 			pstmt.setString(5, info.getMobileNumber());
 			pstmt.setString(6, info.getRole());
 
-			int count = pstmt.executeUpdate();
+			pstmt.executeUpdate();
 
-			if (count != 0) {
-				return true;
-			}
 		} catch (Exception e) {
-			throw new LMSException("User Already Exists");
+			throw new LMSException("Can't Add New User, as User Already Exists");
 		}
-		return false;
+		return true;
 	}
 
 	@Override
@@ -79,31 +75,31 @@ public class LibraryDAOImpl implements LibraryDAO {
 				info.setRole(resultSet.getString("role"));
 				userList.add(info);
 			}
-			return userList;
+			if (userList.isEmpty()) {
+				throw new LMSException("No Users Present in the Library");
+			} else {
+				return userList;
+			}
 		} catch (Exception e) {
-			throw new LMSException("No Users Present In The Database");
+			throw new LMSException(e.getMessage());
 		}
+
 	}
 
 	@Override
 	public boolean addBook(BookDetails bookDetails) {
 		try (Connection conn = dbConnector.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(dbConnector.getQuery("insertBook"));) {
+				PreparedStatement pstmt = conn.prepareStatement(dbConnector.getQuery("addBook"));) {
 			pstmt.setInt(1, bookDetails.getBookId());
 			pstmt.setString(2, bookDetails.getBookName());
 			pstmt.setString(3, bookDetails.getAuthor());
 			pstmt.setString(4, bookDetails.getPublisher());
 			pstmt.setBoolean(5, bookDetails.isAvailable());
-			int count = pstmt.executeUpdate();
-
-			if (count != 0) {
-				return true;
-			}
+			pstmt.executeUpdate();
 		} catch (Exception e) {
-			throw new LMSException("Book Can't be Added, As it is Already Exists in the Database");
-
+			throw new LMSException("Book Can't be Added, As it is Already Exists in the Library");
 		}
-		return false;
+		return true;
 	}
 
 	@Override
@@ -122,155 +118,122 @@ public class LibraryDAOImpl implements LibraryDAO {
 
 					return book;
 				}
-
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			e.getMessage();
 		}
-		throw new LMSException("Book is Not Found");
+		throw new LMSException("Book is Not Found in the Library with the Given Book Id");
 	}
 
 	@Override
 	public List<BookDetails> viewBooks() {
 		List<BookDetails> books = new LinkedList<BookDetails>();
 
-		try (Connection conn = dbConnector.getConnection(); Statement stmt = conn.createStatement();) {
-			try (ResultSet resultSet = stmt.executeQuery(dbConnector.getQuery("showBooks"));) {
-				while (resultSet.next()) {
-					BookDetails details = new BookDetails();
-					details.setBookId(resultSet.getInt("book_id"));
-					details.setBookName(resultSet.getString("name"));
-					details.setAuthor(resultSet.getString("author"));
-					details.setPublisher(resultSet.getString("publisher"));
-					details.setAvailable(resultSet.getBoolean("isAvailable"));
-					books.add(details);
-				}
+		try (Connection conn = dbConnector.getConnection();
+				Statement stmt = conn.createStatement();
+				ResultSet resultSet = stmt.executeQuery(dbConnector.getQuery("showBooks"));) {
+			while (resultSet.next()) {
+				BookDetails bookDetails = new BookDetails();
+				bookDetails.setBookId(resultSet.getInt("book_id"));
+				bookDetails.setBookName(resultSet.getString("name"));
+				bookDetails.setAuthor(resultSet.getString("author"));
+				bookDetails.setPublisher(resultSet.getString("publisher"));
+				bookDetails.setAvailable(resultSet.getBoolean("isAvailable"));
+				books.add(bookDetails);
+			}
+
+			if (books.isEmpty()) {
+				throw new LMSException("No Books Present in the Library");
+			} else {
 				return books;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new LMSException(e.getMessage());
 		}
-		throw new LMSException("NO Books Present in the DataBase");
+
 	}
 
 	@Override
 	public List<RequestInfo> viewRequests() {
 		List<RequestInfo> requestList = new LinkedList<RequestInfo>();
 
-		try (Connection conn = dbConnector.getConnection(); Statement stmt = conn.createStatement();) {
-			try (ResultSet resultSet = stmt.executeQuery(dbConnector.getQuery("showRequests"));) {
-				while (resultSet.next()) {
-					RequestInfo requestInfo = new RequestInfo();
-
-					requestInfo.setRid(resultSet.getInt("rid"));
-					requestInfo.setId(resultSet.getInt("id"));
-					requestInfo.setBookId(resultSet.getInt("book_id"));
-					requestInfo.setIssueDate(resultSet.getDate("issue_date"));
-					requestInfo.setReturnDate(resultSet.getDate("returned_date"));
-					requestInfo.setExpectedReturnDate(resultSet.getDate("expectedreturn_date"));
-					requestList.add(requestInfo);
-
-				}
-				return requestList;
-			}
-		} catch (SQLException e) {
-			throw new LMSException("NO Requests Present in the Request DataBase");
-		}
-		
-	}
-
-	@SuppressWarnings("resource")
-	@Override
-	public boolean issueBook(int rid) {
-		PreparedStatement pstmt = null;
-		Connection conn = null;
-		ResultSet resultSet = null;
-		String query = null;
-		int noOfBooksBorrowed = 0;
-		try {
-			conn = dbConnector.getConnection();
-			query = dbConnector.getQuery("getRequest");
-			pstmt = conn.prepareStatement(query);
-			pstmt.setInt(1, rid);
-			resultSet = pstmt.executeQuery();
-			if (resultSet.next()) {
+		try (Connection conn = dbConnector.getConnection();
+				Statement stmt = conn.createStatement();
+				ResultSet resultSet = stmt.executeQuery(dbConnector.getQuery("showRequests"));) {
+			while (resultSet.next()) {
 				RequestInfo requestInfo = new RequestInfo();
+				requestInfo.setRequestId(resultSet.getInt("rid"));
 				requestInfo.setId(resultSet.getInt("id"));
 				requestInfo.setBookId(resultSet.getInt("book_id"));
-				int requestUserId = requestInfo.getId();
-				int requestBookId = resultSet.getInt("book_id");
+				requestInfo.setIssueDate(resultSet.getDate("issue_date"));
+				requestInfo.setReturnDate(resultSet.getDate("returned_date"));
+				requestInfo.setExpectedReturnDate(resultSet.getDate("expectedreturn_date"));
+				requestList.add(requestInfo);
+			}
+			if (requestList.isEmpty()) {
+				throw new LMSException("No Requests Present in the Library");
+			} else {
+				return requestList;
+			}
+		} catch (Exception e) {
+			throw new LMSException(e.getMessage());
+		}
 
-				if (requestUserId != 0) {
-					String query2 = dbConnector.getQuery("getUserBooks");
-					pstmt = conn.prepareStatement(query2);
-					pstmt.setInt(1, requestUserId);
-					resultSet = pstmt.executeQuery();
+	}
 
-					if (resultSet.next()) {
-						LibraryUsers info2 = new LibraryUsers();
-						info2.setNoOfBooksBorrowed(resultSet.getInt("noOfBooksBorrowed"));
-						noOfBooksBorrowed = info2.getNoOfBooksBorrowed();
+	@Override
+	public boolean issueBook(int rid) {
 
-						if (noOfBooksBorrowed < 3) {
-							query = dbConnector.getQuery("issueBook");
-							pstmt = conn.prepareStatement(query);
-							pstmt.setInt(1, rid);
+		try (Connection conn = dbConnector.getConnection();
+				PreparedStatement getReqPstmt = conn.prepareStatement(dbConnector.getQuery("getRequest"));
+				PreparedStatement getUserPstmt = conn.prepareStatement(dbConnector.getQuery("getUser"));
+				PreparedStatement issuePstmt = conn.prepareStatement(dbConnector.getQuery("issueBook"));
+				PreparedStatement setAvailPstmt = conn.prepareStatement(dbConnector.getQuery("setBookAvailability"));
+				PreparedStatement NoofBooksPstmt = conn
+						.prepareStatement(dbConnector.getQuery("setNoOfBooksBorrowed"));) {
+			getReqPstmt.setInt(1, rid);
+			try (ResultSet getReqSet = getReqPstmt.executeQuery();) {
+				if (getReqSet.next()) {
+					int requestUserId = getReqSet.getInt("id");
+					int requestBookId = getReqSet.getInt("book_id");
 
-							int updateDate = pstmt.executeUpdate();
-							if (updateDate != 0) {
-								// Update book availability as false as we are issuing
-								query = dbConnector.getQuery("setBookAvailability");
-								pstmt = conn.prepareStatement(query);
-								pstmt.setInt(1, requestUserId);
-								pstmt.executeUpdate();
+					if (requestUserId != 0) {
+						getUserPstmt.setInt(1, requestUserId);
+						try (ResultSet getUserSet = getUserPstmt.executeQuery();) {
 
-								// Update User no of books borrowed
-								noOfBooksBorrowed++;
-								query = dbConnector.getQuery("setNoOfBooksBorrowed");
-								pstmt = conn.prepareStatement(query);
-								pstmt.setInt(1, noOfBooksBorrowed);
-								pstmt.setInt(2, requestUserId);
-								pstmt.executeUpdate();
+							if (getUserSet.next()) {
+								LibraryUsers users = new LibraryUsers();
+								users.setNoOfBooksBorrowed(getUserSet.getInt("noOfBooksBorrowed"));
+								int noOfBooksBorrowed = users.getNoOfBooksBorrowed();
+								issuePstmt.setInt(1, rid);
 
-							} // End of if update date!=0
+								int updateDate = issuePstmt.executeUpdate();
+								if (updateDate != 0) {
+									// Update Book Availability to false while Issuing the Book
+									setAvailPstmt.setInt(1, requestBookId);
+									setAvailPstmt.executeUpdate();
 
-							return true;
-
-						} else {
-							throw new LMSException("Number of Books Borrowed are more than 3");
+									// Update No. of Books Borrowed By the User
+									noOfBooksBorrowed++;
+									NoofBooksPstmt.setInt(1, noOfBooksBorrowed);
+									NoofBooksPstmt.setInt(2, requestUserId);
+									NoofBooksPstmt.executeUpdate();
+								} else {
+									throw new LMSException("This Book is Already Issued to the User");
+								}
+							}
 						}
 
 					} else {
-						throw new LMSException("user date not found");
+						throw new LMSException("Request not Found with Matching BookId (or) UserId ");
 					}
-
-				} else {
-					throw new LMSException("No Request Found");
 				}
-
-			} else {
-				throw new LMSException("Book Can't Be issued");
 			}
-
 		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
+			throw new LMSException(e.getMessage());
 
-		} finally {
-			try {
-
-				if (pstmt != null) {
-					pstmt.close();
-				}
-
-				if (resultSet != null) {
-					resultSet.close();
-				}
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
+		return true;
 	}
 
 	@Override
@@ -283,11 +246,11 @@ public class LibraryDAOImpl implements LibraryDAO {
 				return true;
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new LMSException(e.getMessage());
 
 		}
-		throw new LMSException("Book Can't Be Removed or Deleted");
+		throw new LMSException("Book Can't Be Removed or Deleted Because it is not Present in the Library");
 	}
 
 	@Override
@@ -305,214 +268,195 @@ public class LibraryDAOImpl implements LibraryDAO {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new LMSException(e.getMessage());
 
 		}
-		throw new LMSException("Invalid User Credentials, Please Enter Correct Details");
+		throw new LMSException("Invalid Login Credentials, Please Enter Correctly");
 	}
 
 	@Override
-	public RequestInfo bookRequest(int userId, int bookId) {
-		RequestInfo requestInfo = new RequestInfo();
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet resultSet = null;
-		boolean isAvail = false;
-		String query = null;
+	public boolean changePassword(String emailId, String oldPassword, String newPassword) {
 
-		try {
-			conn = dbConnector.getConnection();
-			query = dbConnector.getQuery("checkAvailability");
-			pstmt = conn.prepareStatement(query);
-			pstmt.setInt(1, bookId);
-			resultSet = pstmt.executeQuery();
-
-			// System.out.println("It is not Available for Borrowing");
-			while (resultSet.next()) {
-				isAvail = resultSet.getBoolean(1);
-			}
-			if (isAvail) {
-				query = dbConnector.getQuery("requestBook");
-				pstmt = conn.prepareStatement(query);
-				pstmt.setInt(1, userId);
-				pstmt.setInt(2, bookId);
-				int count = pstmt.executeUpdate();
-
-				if (count != 0) {
-					requestInfo.setId(userId);
-					requestInfo.setBookId(bookId);
-
-					return requestInfo;
-
-				} else {
-					throw new LMSException("Request Cannot Be Placed");
-				}
-			} else {
-				throw new LMSException("This Book Is Not For Borrowing");
+		try (Connection conn = dbConnector.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(dbConnector.getQuery("changePassword"));) {
+			pstmt.setString(1, newPassword);
+			pstmt.setString(2, emailId);
+			pstmt.setString(3, oldPassword);
+			int count = pstmt.executeUpdate();
+			if (count != 0) {
+				return true;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new LMSException("Request Can't Be placed");
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-					conn = null;
+
+		}
+		throw new LMSException("Unable to Update the Password due to Invalid Credentials");
+	}
+
+	@Override
+	public boolean bookRequest(int userId, int bookId) {
+		boolean isAvailable = false;
+		int reqestedBookId = 0;
+		int validBookId = 0;
+		int noOfRequests = 0;
+
+		try (Connection conn = dbConnector.getConnection();
+				Statement isRequestExist = conn.createStatement();
+				PreparedStatement countReqPstmt = conn.prepareStatement(dbConnector.getQuery("countRequests"));
+				PreparedStatement checkAvailPstmt = conn.prepareStatement(dbConnector.getQuery("checkAvailability"));
+				PreparedStatement reqPstmt = conn.prepareStatement(dbConnector.getQuery("requestBook"));) {
+
+			try (ResultSet resultSet = isRequestExist.executeQuery(dbConnector.getQuery("showRequests"))) {
+				while (resultSet.next()) {
+					reqestedBookId = resultSet.getInt("book_id");
+					if (reqestedBookId == bookId) {
+						throw new LMSException("Book is Already Requested, So Request Can't be Placed");
+					}
 				}
-				if (pstmt != null) {
-					pstmt.close();
-					pstmt = null;
+
+			}
+			countReqPstmt.setInt(1, userId);
+
+			try (ResultSet countResultSet = countReqPstmt.executeQuery()) {
+				if (countResultSet.next()) {
+					noOfRequests = countResultSet.getInt(1);
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+
+				if (noOfRequests < 3) {
+					checkAvailPstmt.setInt(1, bookId);
+
+					try (ResultSet availResultSet = checkAvailPstmt.executeQuery();) {
+						while (availResultSet.next()) {
+							validBookId = availResultSet.getInt("book_id");
+							isAvailable = availResultSet.getBoolean("isAvailable");
+						}
+
+						if (validBookId != 0) {
+							if (isAvailable) {
+								reqPstmt.setInt(1, userId);
+								reqPstmt.setInt(2, bookId);
+								reqPstmt.executeUpdate();
+
+								RequestInfo requestInfo = new RequestInfo();
+								requestInfo.setId(userId);
+								requestInfo.setBookId(bookId);
+
+								return true;
+							} else {
+								throw new LMSException("Book is Not Available For Borrowing");
+							}
+						} else {
+							throw new LMSException("The Book You are Requested is Not Present in the Library");
+						}
+					}
+				} else {
+					throw new LMSException("User Can't Place More Than 3 Requests");
+				}
 			}
 
+		} catch (Exception e) {
+			throw new LMSException(e.getMessage());
 		}
 	}
 
 	@Override
 	public boolean bookReturn(int userId, int bookId) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		String query = null;
-		ResultSet rs = null;
-		try {
-			conn = dbConnector.getConnection();
-			query = dbConnector.getQuery("returnBook");
-			pstmt = conn.prepareStatement(query);
-			pstmt.setInt(1, userId);
-			pstmt.setInt(2, bookId);
 
-			rs = pstmt.executeQuery();
+		try (Connection conn = dbConnector.getConnection();
+				PreparedStatement getReqPstmt = conn.prepareStatement(dbConnector.getQuery("returnBook"));
+				PreparedStatement updateDatePstmt = conn.prepareStatement(dbConnector.getQuery("updateReturnDate"));) {
+			getReqPstmt.setInt(1, userId);
+			getReqPstmt.setInt(2, bookId);
 
-			if (rs.next() != false) {
-				int requestId = rs.getInt("rid");
-				System.out.println("Request Id....." + requestId);
-				query = dbConnector.getQuery("updateReturnDate");
-				pstmt = conn.prepareStatement(query);
-				pstmt.setInt(1, requestId);
+			try (ResultSet resultSet = getReqPstmt.executeQuery();) {
 
-				int count = pstmt.executeUpdate();
-				if (count != 0) {
-					return true;
+				if (resultSet.next()) {
+					int requestId = resultSet.getInt("rid");
+					updateDatePstmt.setInt(1, requestId);
+
+					updateDatePstmt.executeUpdate();
+
 				} else {
-					return false;
+					throw new LMSException("Return Request not Found with the Request Id");
 				}
-			} else {
-				return false;
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		} finally {
-			try {
-
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (rs != null) {
-					rs.close();
-				}
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			throw new LMSException(e.getMessage());
 		}
-
+		return true;
 	}
 
-	@SuppressWarnings("resource")
 	@Override
-	public boolean isBookReceived(int rid) {
-		PreparedStatement pstmt = null;
-		String query = null;
-		ResultSet resultSet = null;
+	public boolean receiveBook(int requestId) {
+
 		int noOfDaysDelayed = 0;
 		int fine = 0;
 		int userId = 0;
 		int bookId = 0;
-		int result = 0;
-		try {
-			Connection conn = dbConnector.getConnection();
-			query = dbConnector.getQuery("receiveBook");
-			pstmt = conn.prepareStatement(query);
-			pstmt.setInt(1, rid);
-			resultSet = pstmt.executeQuery();
+		try (Connection conn = dbConnector.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(dbConnector.getQuery("receiveBook"));
+				PreparedStatement getFinePstmt = conn.prepareStatement(dbConnector.getQuery("getfine"));
+				PreparedStatement setFinePstmt = conn.prepareStatement(dbConnector.getQuery("userFine"));
+				PreparedStatement setAvailPstmt = conn.prepareStatement(dbConnector.getQuery("setBookAvailability2"));
+				PreparedStatement setNoofBooksPstmt = conn
+						.prepareStatement(dbConnector.getQuery("setNoOfBooksBorrowed2"));
+				PreparedStatement removeReqPstmt = conn.prepareStatement(dbConnector.getQuery("removeRequest"));) {
 
-			while (resultSet.next()) {
-				Date returnedDate = resultSet.getDate("returned_date");
-				Date expectedReturnedDate = resultSet.getDate("expectedreturn_date");
-				userId = resultSet.getInt("id");
-				bookId = resultSet.getInt("book_id");
+			pstmt.setInt(1, requestId);
+			try (ResultSet resultSet = pstmt.executeQuery();) {
 
-				if (returnedDate != null) {
-					query = dbConnector.getQuery("getfine");
-					pstmt = conn.prepareStatement(query);
-					pstmt.setDate(1, returnedDate);
-					pstmt.setDate(2, expectedReturnedDate);
-					pstmt.setInt(3, rid);
+				while (resultSet.next()) {
+					Date returnedDate = resultSet.getDate("returned_date");
+					Date expectedReturnedDate = resultSet.getDate("expectedreturn_date");
+					userId = resultSet.getInt("id");
+					bookId = resultSet.getInt("book_id");
 
-					resultSet = pstmt.executeQuery();
+					if (returnedDate != null) {
 
-					while (resultSet.next()) {
-						noOfDaysDelayed = resultSet.getInt(1);
-					}
+						getFinePstmt.setDate(1, returnedDate);
+						getFinePstmt.setDate(2, expectedReturnedDate);
+						getFinePstmt.setInt(3, requestId);
 
-					if (noOfDaysDelayed > 0) {
-						fine = noOfDaysDelayed * 5;
-						query = dbConnector.getQuery("userFine");
-						pstmt = conn.prepareStatement(query);
-						pstmt.setDouble(1, fine);
-						pstmt.setInt(2, userId);
+						try (ResultSet fineResultSet = getFinePstmt.executeQuery();) {
 
-						result = pstmt.executeUpdate();
-						if (result != 0) {
-							System.out.println("fine updated   " + fine);
+							while (fineResultSet.next()) {
+								noOfDaysDelayed = fineResultSet.getInt(1);
+							}
 						}
+						if (noOfDaysDelayed > 0) {
+							fine = noOfDaysDelayed * 5;
+
+							setFinePstmt.setDouble(1, fine);
+							setFinePstmt.setInt(2, userId);
+							setFinePstmt.executeUpdate();
+
+						}
+						// set Availability of Book to true After Receiving it From the User
+						setAvailPstmt.setInt(1, bookId);
+						setAvailPstmt.executeUpdate();
+
+						// set no Of Books Borrowed After Receiving
+						setNoofBooksPstmt.setInt(1, userId);
+						setNoofBooksPstmt.executeUpdate();
+
+						// Delete the Request After Receiving it from the User
+						removeReqPstmt.setInt(1, requestId);
+						removeReqPstmt.executeUpdate();
+						return true;
+					} else {
+						throw new LMSException("Book Can't be Received, as it is not Returned by the User");
 					}
-					// Make available in library books
-					query = dbConnector.getQuery("setBookAvailability2");
-					pstmt = conn.prepareStatement(query);
-					pstmt.setInt(1, bookId);
-					result = pstmt.executeUpdate();
-
-					// set No Of Books Borrowed
-					query = dbConnector.getQuery("setNoOfBooksBorrowed2");
-					pstmt = conn.prepareStatement(query);
-					pstmt.setInt(1, userId);
-					result = pstmt.executeUpdate();
-
-					query = dbConnector.getQuery("removeRequest");
-					pstmt = conn.prepareStatement(query);
-					pstmt.setInt(1, rid);
-
-					result = pstmt.executeUpdate();
-					return true;
 				}
 
 			}
-			return false;
+
+			throw new LMSException("Request Id is not Valid");
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
+			throw new LMSException(e.getMessage());
 		}
 
-		finally {
-			try {
-
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (resultSet != null) {
-					resultSet.close();
-				}
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		} 
 	}
+
 }

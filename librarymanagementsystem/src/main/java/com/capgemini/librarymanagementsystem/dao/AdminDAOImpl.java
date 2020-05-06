@@ -19,11 +19,12 @@ public class AdminDAOImpl implements AdminDAO {
 
 	@Override
 	public boolean authentication(String adminEmail, String password) {
-		AdminInfo adminInfo = new AdminInfo();
-		if (adminInfo.getEmailId().equals(adminEmail) && adminInfo.getPassword().equals(password)) {
-			return true;
+		for (AdminInfo adminInfo : DataBase.ADMIN_INFOS) {
+			if (adminInfo.getEmailId().equalsIgnoreCase(adminEmail) && adminInfo.getPassword().equals(password)) {
+				return true;
+			}
 		}
-		throw new LMSException("Invalid Admin Credentials");
+		throw new LMSException("Invalid Login Credentials Please Enter Correctly");
 	}
 
 	@Override
@@ -38,7 +39,7 @@ public class AdminDAOImpl implements AdminDAO {
 	}
 
 	@Override
-	public List<UserInfo> showUsers() {
+	public List<UserInfo> viewUsers() {
 		List<UserInfo> userList = new LinkedList<UserInfo>();
 		for (UserInfo user : DataBase.USER_INFOS) {
 			user.getUserId();
@@ -47,12 +48,12 @@ public class AdminDAOImpl implements AdminDAO {
 			user.getPassword();
 			user.getMobileNumber();
 			userList.add(user);
+
 		}
 		if (userList.isEmpty()) {
-			throw new LMSException("No Users Found In The Database");
+			throw new LMSException("No Users Found In The Library");
 		}
 		return userList;
-
 	}
 
 	@Override
@@ -70,7 +71,7 @@ public class AdminDAOImpl implements AdminDAO {
 		boolean add = true;
 		for (BookDetails bookInfo : DataBase.BOOK_DETAILS) {
 			if (bookInfo.getBookId() == details.getBookId()) {
-				throw new LMSException("Book Can't Be Added, As Book is Already Exists");
+				throw new LMSException("Book Can't Be Added, As Book Id Already Exists in the Library");
 			}
 		}
 		DataBase.BOOK_DETAILS.add(details);
@@ -78,7 +79,7 @@ public class AdminDAOImpl implements AdminDAO {
 	}
 
 	@Override
-	public List<BookDetails> showBooks() {
+	public List<BookDetails> viewBooks() {
 
 		List<BookDetails> books = new LinkedList<BookDetails>();
 		for (BookDetails bookDetails : DataBase.BOOK_DETAILS) {
@@ -89,13 +90,13 @@ public class AdminDAOImpl implements AdminDAO {
 			books.add(bookDetails);
 		}
 		if (books.isEmpty()) {
-			throw new LMSException("No Books Found In The Database");
+			throw new LMSException("No Books Found In The Library with the Given Book Id");
 		}
 		return books;
 	}
 
 	@Override
-	public List<RequestInfo> showRequests() {
+	public List<RequestInfo> viewRequests() {
 		List<RequestInfo> requestsList = new LinkedList<RequestInfo>();
 
 		for (RequestInfo requestInfo : DataBase.REQUEST_INFOS) {
@@ -106,7 +107,7 @@ public class AdminDAOImpl implements AdminDAO {
 			requestsList.add(requestInfo);
 		}
 		if (requestsList.isEmpty()) {
-			throw new LMSException("No Requests Found In The Database");
+			throw new LMSException("No Requests Found In The Library");
 		} else {
 			return requestsList;
 		}
@@ -126,7 +127,7 @@ public class AdminDAOImpl implements AdminDAO {
 
 		for (RequestInfo info : DataBase.REQUEST_INFOS) {
 			if (info.getUserId() == userId) {
-				if (info.getBookId() == bookId) {
+				if ((info.getBookId() == bookId) && (info.isIssued() == false)) {
 					isValidRequest = true;
 					requestInfo = info;
 				}
@@ -148,7 +149,7 @@ public class AdminDAOImpl implements AdminDAO {
 			}
 
 			if (noOfBooksBorrowed < 3) {
-				book.setAvailable(false);
+				book.setBookAvailable(false);
 				noOfBooksBorrowed++;
 				user.setNoOfBooksBorrowed(noOfBooksBorrowed);
 				requestInfo.setIssued(true);
@@ -162,7 +163,7 @@ public class AdminDAOImpl implements AdminDAO {
 			}
 
 		} else {
-			throw new LMSException("Book Can't Be Issued");
+			throw new LMSException("Book Can't Be Issued, as BookId (or) UserId is Invalid");
 		}
 	}
 
@@ -170,7 +171,7 @@ public class AdminDAOImpl implements AdminDAO {
 	public boolean removeBook(int bookId) {
 		for (BookDetails bookDetails : DataBase.BOOK_DETAILS) {
 			if (bookDetails.getBookId() == bookId) {
-				DataBase.BOOK_DETAILS.remove(bookDetails);
+				DataBase.BOOK_DETAILS.remove(bookId);
 				return true;
 			}
 		}
@@ -201,7 +202,7 @@ public class AdminDAOImpl implements AdminDAO {
 			int NoOfDaysDelayed = (int) (diffInMilliSecs / (24 * 60 * 60 * 1000));
 			for (BookDetails bookDetails : DataBase.BOOK_DETAILS) {
 				if (bookDetails.getBookId() == bookId) {
-					bookDetails.setAvailable(true);
+					bookDetails.setBookAvailable(true);
 					break;
 				}
 			}
@@ -224,6 +225,6 @@ public class AdminDAOImpl implements AdminDAO {
 			return true;
 		}
 
-		throw new LMSException("Book is Not Received ");
+		throw new LMSException("Book is Not Received,Due to Invalid userId or BookId");
 	}
 }

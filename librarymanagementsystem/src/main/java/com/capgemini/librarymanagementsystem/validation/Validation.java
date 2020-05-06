@@ -8,13 +8,13 @@ import com.capgemini.librarymanagementsystem.exception.LMSException;
 public class Validation {
 
 	public boolean validateId(int id) throws LMSException {
-		String idRegEx = "[1]{1}[0-9]{2}";
+		String idRegEx = "[0-9]{3}";
 		boolean result = false;
 
 		if (Pattern.matches(idRegEx, String.valueOf(id))) {
 			result = true;
 		} else {
-			throw new LMSException("Id Should Contain Exact 3 Digits, First Digit Should be 1");
+			throw new LMSException("Please Enter valid Id which Contains Exact 3 Digits, First Digit Should be 1");
 		}
 		return result;
 	}
@@ -34,7 +34,8 @@ public class Validation {
 	}
 
 	public boolean validateEmail(String emailId) throws LMSException {
-		String emailRegEx = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+		String emailRegEx = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+				+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 		boolean result = false;
 
 		Pattern pattern = Pattern.compile(emailRegEx);
@@ -58,7 +59,7 @@ public class Validation {
 			result = true;
 		} else {
 			throw new LMSException(
-					"Password Should Contain Atleast 6 Characters, One Uppercase, One Lowercase and One Symbol ");
+					"Enter Valid Passsword with min 6 Characters, One Uppercase and Lowercase and a Symbol ");
 		}
 		return result;
 	}

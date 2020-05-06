@@ -25,9 +25,9 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public List<UserInfo> showUsers() {
+	public List<UserInfo> viewUsers() {
 
-		return dao.showUsers();
+		return dao.viewUsers();
 	}
 
 	@Override
@@ -43,15 +43,15 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public List<BookDetails> showBooks() {
+	public List<BookDetails> viewBooks() {
 
-		return dao.showBooks();
+		return dao.viewBooks();
 	}
 
 	@Override
-	public List<RequestInfo> showRequests() {
+	public List<RequestInfo> viewRequests() {
 
-		return dao.showRequests();
+		return dao.viewRequests();
 	}
 
 	@Override

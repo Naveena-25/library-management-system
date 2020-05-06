@@ -16,17 +16,17 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public boolean userLogin(String emailId, String password) {
 		for (UserInfo userInfo : DataBase.USER_INFOS) {
-			if (userInfo.getEmailId().equals(emailId) && userInfo.getPassword().equals(password)) {
+			if (userInfo.getEmailId().equalsIgnoreCase(emailId) && userInfo.getPassword().equals(password)) {
 				return true;
 			}
 		}
-		throw new LMSException("Invalid user Credentials Please Enter Correctly");
+		throw new LMSException("Invalid Login Credentials,Please enter Correctly");
 	}
 
 	@Override
 	public boolean changePassword(String emailId, String oldPassword, String newPassword) {
 		for (UserInfo userInfo : DataBase.USER_INFOS) {
-			if ((userInfo.getEmailId().equals(emailId)) && (userInfo.getPassword().equals(oldPassword))) {
+			if ((userInfo.getEmailId().equalsIgnoreCase(emailId)) && (userInfo.getPassword().equals(oldPassword))) {
 				userInfo.setPassword(newPassword);
 				return true;
 			}
@@ -61,7 +61,7 @@ public class UserDAOImpl implements UserDAO {
 			for (UserInfo user : DataBase.USER_INFOS) {
 				if (userId == user.getUserId()) {
 					for (BookDetails book : DataBase.BOOK_DETAILS) {
-						if ((book.getBookId() == bookId) && (book.isAvailable() == true)) {
+						if ((book.getBookId() == bookId) && (book.isBookAvailable() == true)) {
 							requestInfo.setBookId(bookId);
 							requestInfo.setUserId(userId);
 							requestInfo.setIssued(false);
@@ -73,7 +73,7 @@ public class UserDAOImpl implements UserDAO {
 			}
 		}
 
-		throw new LMSException("Request Can't be place to Admin");
+		throw new LMSException("Book Request Can't be placed to Admin");
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class UserDAOImpl implements UserDAO {
 
 		}
 
-		throw new LMSException("Invalid Book Return");
+		throw new LMSException("Invalid Book Return Because of Invalid user Id/Book Id");
 	}
 
 }

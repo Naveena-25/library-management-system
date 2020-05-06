@@ -9,7 +9,7 @@ import com.capgemini.librarymanagementjdbc.dto.RequestInfo;
 public interface LibraryService {
 	LibraryUsers login(String emailId, String password);
 
-	boolean addUser(LibraryUsers info);
+	boolean addUser(LibraryUsers libraryUsers);
 
 	List<LibraryUsers> viewUsers();
 
@@ -21,15 +21,17 @@ public interface LibraryService {
 
 	List<RequestInfo> viewRequests();
 
-	boolean issueBook(int rid);
+	boolean issueBook(int requestId);
 
 	boolean removeBook(int bookId);
 
 	LibraryUsers userLogin(String emailId, String password);
+	
+	boolean changePassword(String emailId, String password, String newPassword);
 
-	RequestInfo bookRequest(int userId, int bookId);
+	boolean bookRequest(int userId, int bookId);
 
 	boolean bookReturn(int userId, int bookId);
 
-	boolean isBookReceived(int rid);
+	boolean receiveBook(int requestId);
 }

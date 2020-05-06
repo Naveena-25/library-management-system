@@ -12,6 +12,21 @@ public class UserInfo implements Serializable {
 	private int noOfBooksBorrowed;
 	private double fine;
 
+	public UserInfo() {
+
+	}
+
+	public UserInfo(int userId, String userName, String emailId, String password, String mobileNumber,
+			int noOfBooksBorrowed, double fine) {
+		this.userId = userId;
+		this.userName = userName;
+		this.emailId = emailId;
+		this.password = password;
+		this.mobileNumber = mobileNumber;
+		this.noOfBooksBorrowed = noOfBooksBorrowed;
+		this.fine = fine;
+	}
+
 	public int getUserId() {
 		return userId;
 	}
@@ -66,5 +81,12 @@ public class UserInfo implements Serializable {
 
 	public void setFine(double fine) {
 		this.fine = fine;
+	}
+
+	@Override
+	public String toString() {
+		return "UserInfo [userId=" + userId + ", userName=" + userName + ", emailId=" + emailId + ", password="
+				+ password + ", mobileNumber=" + mobileNumber + ", noOfBooksBorrowed=" + noOfBooksBorrowed + ", fine="
+				+ fine + "]";
 	}
 }

@@ -5,19 +5,19 @@ import java.sql.Date;
 
 public class RequestInfo implements Serializable {
 
-	private int rid;
+	private int requestId;
 	private int id;
 	private int bookId;
 	private Date issueDate;
 	private Date expectedReturnDate;
 	private Date returnDate;
 
-	public int getRid() {
-		return rid;
+	public int getRequestId() {
+		return requestId;
 	}
 
-	public void setRid(int rid) {
-		this.rid = rid;
+	public void setRequestId(int requestId) {
+		this.requestId = requestId;
 	}
 
 	public int getId() {

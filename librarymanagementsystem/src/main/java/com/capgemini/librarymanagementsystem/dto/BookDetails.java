@@ -8,7 +8,19 @@ public class BookDetails implements Serializable {
 	private String bookName;
 	private String author;
 	private String publisherName;
-	private boolean isAvailable;
+	private boolean isBookAvailable;
+
+	public BookDetails() {
+
+	}
+
+	public BookDetails(int bookId, String bookName, String author, String publisherName, boolean isBookAvailable) {
+		this.bookId = bookId;
+		this.bookName = bookName;
+		this.author = author;
+		this.publisherName = publisherName;
+		this.isBookAvailable = isBookAvailable;
+	}
 
 	public int getBookId() {
 		return bookId;
@@ -42,11 +54,18 @@ public class BookDetails implements Serializable {
 		this.publisherName = publisherName;
 	}
 
-	public boolean isAvailable() {
-		return isAvailable;
+	public boolean isBookAvailable() {
+		return isBookAvailable;
 	}
 
-	public void setAvailable(boolean isAvailable) {
-		this.isAvailable = isAvailable;
+	public void setBookAvailable(boolean isBookAvailable) {
+		this.isBookAvailable = isBookAvailable;
 	}
+
+	@Override
+	public String toString() {
+		return "BookDetails [bookId=" + bookId + ", bookName=" + bookName + ", author=" + author + ", publisherName="
+				+ publisherName + ", isBookAvailable=" + isBookAvailable + "]";
+	}
+
 }

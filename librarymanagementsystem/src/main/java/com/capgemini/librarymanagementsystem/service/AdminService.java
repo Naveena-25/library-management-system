@@ -12,15 +12,15 @@ public interface AdminService {
 
 	boolean addUser(UserInfo userInfo);
 
-	List<UserInfo> showUsers();
+	List<UserInfo> viewUsers();
 
 	BookDetails search(int bookId);
 
 	boolean addBook(BookDetails bookDetails);
 
-	List<BookDetails> showBooks();
+	List<BookDetails> viewBooks();
 
-	List<RequestInfo> showRequests();
+	List<RequestInfo> viewRequests();
 
 	boolean issueBook(int userId, int bookId);
 

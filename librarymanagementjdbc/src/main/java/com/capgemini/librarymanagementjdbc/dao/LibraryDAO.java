@@ -8,7 +8,7 @@ import com.capgemini.librarymanagementjdbc.dto.RequestInfo;
 public interface LibraryDAO {
 	LibraryUsers login(String emailId, String password);
 
-	boolean addUser(LibraryUsers info);
+	boolean addUser(LibraryUsers libraryUsers);
 
 	List<LibraryUsers> viewUsers();
 
@@ -20,15 +20,17 @@ public interface LibraryDAO {
 
 	List<RequestInfo> viewRequests();
 
-	boolean issueBook(int rid);
+	boolean issueBook(int requestId);
 
 	boolean removeBook(int bookId);
 
 	LibraryUsers userLogin(String emailId, String password);
 
-	RequestInfo bookRequest(int userId, int bookId);
+	boolean changePassword(String emailId, String oldPassword, String newPassword);
+
+	boolean bookRequest(int userId, int bookId);
 
 	boolean bookReturn(int userId, int bookId);
 
-	boolean isBookReceived(int rid);
+	boolean receiveBook(int requestId);
 }

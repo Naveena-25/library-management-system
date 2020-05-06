@@ -4,8 +4,17 @@ import java.io.Serializable;
 
 public class AdminInfo implements Serializable {
 
-	private String emailId = "admin@gmail.com";
-	private String password = "Admin@1";
+	private String emailId;
+	private String password;
+
+	public AdminInfo() {
+
+	}
+
+	public AdminInfo(String emailId, String password) {
+		this.emailId = emailId;
+		this.password = password;
+	}
 
 	public String getEmailId() {
 		return emailId;
@@ -23,4 +32,8 @@ public class AdminInfo implements Serializable {
 		this.password = password;
 	}
 
+	@Override
+	public String toString() {
+		return "AdminInfo [emailId=" + emailId + ", password=" + password + "]";
+	}
 }

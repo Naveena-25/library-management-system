@@ -18,9 +18,9 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Override
-	public boolean addUser(LibraryUsers info) {
+	public boolean addUser(LibraryUsers libraryUsers) {
 
-		return dao.addUser(info);
+		return dao.addUser(libraryUsers);
 	}
 
 	@Override
@@ -53,8 +53,8 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Override
-	public boolean issueBook(int rid) {
-		return dao.issueBook(rid);
+	public boolean issueBook(int requestId) {
+		return dao.issueBook(requestId);
 	}
 
 	@Override
@@ -70,7 +70,13 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Override
-	public RequestInfo bookRequest(int userId, int bookId) {
+	public boolean changePassword(String emailId, String oldPassword, String newPassword) {
+
+		return dao.changePassword(emailId, oldPassword, newPassword);
+	}
+
+	@Override
+	public boolean bookRequest(int userId, int bookId) {
 
 		return dao.bookRequest(userId, bookId);
 	}
@@ -82,9 +88,9 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Override
-	public boolean isBookReceived(int rid) {
+	public boolean receiveBook(int requestId) {
 
-		return dao.isBookReceived(rid);
+		return dao.receiveBook(requestId);
 	}
 
 }
