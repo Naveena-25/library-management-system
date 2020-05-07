@@ -12,7 +12,7 @@ import com.capgemini.librarymanagementhibernate.factory.Factory;
 import com.capgemini.librarymanagementhibernate.service.LibraryService;
 import com.capgemini.librarymanagementhibernate.validation.Validation;
 
-public class Utility {
+public class LibraryUtility {
 
 	private static final LibraryService service = Factory.getLibraryService();
 	private static final Validation VALIDATION = new Validation();
@@ -166,7 +166,7 @@ public class Utility {
 		return choice;
 	}
 
-	public static void libraryUtility() {
+	public static void libraryManagementUtility() {
 		BookDetails bookDetails;
 		LibraryUsers users;
 
@@ -352,12 +352,12 @@ public class Utility {
 								try {
 									List<RequestInfo> requestList = service.viewRequests();
 									System.out.println("Requested Books are :");
-									System.out.println(String.format("%-10s %-10s %-10s %-30s %-40s %-30s",
+									System.out.println(String.format("%-10s %-10s %-10s %-20s %-25s %-30s",
 											"REQUEST ID", "USER ID", "BOOK ID", "ISSUE DATE", "EXPECTED RETURN DATE",
 											"RETURN DATE"));
 
 									for (RequestInfo requestInfo : requestList) {
-										System.out.println(String.format("%-10s %-10s %-10s %-30s %-40s %-30s",
+										System.out.println(String.format("%-10s %-10s %-10s %-20s %-25s %-30s",
 												requestInfo.getRId(), requestInfo.getId(), requestInfo.getBookId(),
 												requestInfo.getIssueDate(), requestInfo.getExpectedReturnDate(),
 												requestInfo.getReturnedDate()));
@@ -400,7 +400,7 @@ public class Utility {
 								System.out.println("Enter Request Id");
 								requestId = scanner.nextInt();
 								try {
-									boolean isReceived = service.isBookReceived(requestId);
+									boolean isReceived = service.receiveBook(requestId);
 									if (isReceived) {
 										System.out.println("Book is Received by the Librarian");
 									}
@@ -419,7 +419,7 @@ public class Utility {
 
 						} while (adminchoice != 0);
 					} else {
-						System.err.println("Invalid Admin Credentials");
+						System.err.println("Invalid Admin Credentials, Role Doesn't Match");
 					}
 
 				} catch (LMSException e) {

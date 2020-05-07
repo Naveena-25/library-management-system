@@ -33,5 +33,5 @@ public interface LibraryService {
 
 	boolean bookReturn(int userId, int bookId);
 
-	boolean isBookReceived(int requestId);
+	boolean receiveBook(int requestId);
 }

@@ -10,8 +10,9 @@ public class LibraryUsers implements Serializable {
 	private String password;
 	private String mobileNumber;
 	private String role;
+	private double fine;
 	private int noOfBooksBorrowed;
-	private int fine;
+
 
 	public int getId() {
 		return id;
@@ -60,6 +61,13 @@ public class LibraryUsers implements Serializable {
 	public void setRole(String role) {
 		this.role = role;
 	}
+	public double getFine() {
+		return fine;
+	}
+
+	public void setFine(double fine) {
+		this.fine = fine;
+	}
 
 	public int getNoOfBooksBorrowed() {
 		return noOfBooksBorrowed;
@@ -67,14 +75,6 @@ public class LibraryUsers implements Serializable {
 
 	public void setNoOfBooksBorrowed(int noOfBooksBorrowed) {
 		this.noOfBooksBorrowed = noOfBooksBorrowed;
-	}
-
-	public int getFine() {
-		return fine;
-	}
-
-	public void setFine(int fine) {
-		this.fine = fine;
 	}
 
 }

@@ -62,7 +62,7 @@ public class LibraryServiceImpl implements LibraryService {
 	@Override
 	public boolean removeBook(int bookId) {
 
-		return false;
+		return dao.removeBook(bookId);
 	}
 
 	@Override
@@ -90,9 +90,9 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Override
-	public boolean isBookReceived(int requestId) {
+	public boolean receiveBook(int requestId) {
 
-		return dao.isBookReceived(requestId);
+		return dao.receiveBook(requestId);
 	}
 
 }

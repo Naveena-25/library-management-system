@@ -261,14 +261,14 @@ public class LibraryUtility {
 								try {
 									List<LibraryUsers> userList = service.viewUsers();
 									System.out.println("Users Present in Database are:");
-									System.out.println(String.format("%-10s %-20s %-25s %-15s %-25s %-5s", "USER ID",
-											"USER NAME", "EMAIL ID", "MOBILE NUMBER", "NO.OF BOOKS BORROWED", "FINE"));
+									System.out.println(String.format("%-10s %-20s %-25s %-15s %-15s %-5s %-10s", "USER ID",
+											"USER NAME", "EMAIL ID", "MOBILE NUMBER","ROLE", "FINE", "NO.OF BOOKS BORROWED"));
 
 									for (LibraryUsers libraryUsers : userList) {
-										System.out.println(String.format("%-10s %-20s %-25s %-15s %-25s %-5s",
+										System.out.println(String.format("%-10s %-20s %-25s %-15s %-15s %-5s %-10s",
 												libraryUsers.getId(), libraryUsers.getUserName(),
-												libraryUsers.getEmailId(), libraryUsers.getMobileNumber(),
-												libraryUsers.getNoOfBooksBorrowed(), libraryUsers.getFine()));
+												libraryUsers.getEmailId(), libraryUsers.getMobileNumber(),libraryUsers.getRole(),
+												libraryUsers.getFine(),libraryUsers.getNoOfBooksBorrowed()));
 									}
 								} catch (LMSException e) {
 									System.err.println(e.getMessage());
@@ -307,7 +307,7 @@ public class LibraryUtility {
 								author = checkName();
 								System.out.println("Enter the Publisher Name");
 								publisher = checkName();
-								System.out.println("is Book Available");
+								System.out.println("Set Book Availability");
 								isAvailable = scanner.nextBoolean();
 
 								bookDetails.setBookId(bookId);

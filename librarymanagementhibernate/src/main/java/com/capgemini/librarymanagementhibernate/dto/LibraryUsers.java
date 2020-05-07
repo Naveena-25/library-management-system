@@ -18,11 +18,11 @@ public class LibraryUsers implements Serializable{
 	private int id;
 	@Column
 	private String name;
-	@Column
+	@Column(unique = true)
 	private String emailId;
 	@Column
 	private String password;
-	@Column
+	@Column(unique = true)
 	private String mobileNumber;
 	@Column
 	private String role;

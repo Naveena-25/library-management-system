@@ -73,6 +73,9 @@ public class LibraryDAOImpl implements LibraryDAO {
 				info.setPassword(resultSet.getString("password"));
 				info.setMobileNumber(resultSet.getString("mobile"));
 				info.setRole(resultSet.getString("role"));
+				info.setFine(resultSet.getDouble("fine"));
+				info.setNoOfBooksBorrowed(resultSet.getInt("noOfBooksBorrowed"));
+				
 				userList.add(info);
 			}
 			if (userList.isEmpty()) {
