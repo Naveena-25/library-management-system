@@ -1,0 +1,44 @@
+-------------------------------------------------------------------------------
+Test set: com.capgemini.librarymanagementspringrest.LibraryDAOTest
+-------------------------------------------------------------------------------
+Tests run: 14, Failures: 10, Errors: 0, Skipped: 0, Time elapsed: 0.031 sec <<< FAILURE!
+com.capgemini.librarymanagementspringrest.LibraryDAOTest.testIssueBook()  Time elapsed: 0.005 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryDAOTest.testIssueBook(LibraryDAOTest.java:93)
+
+com.capgemini.librarymanagementspringrest.LibraryDAOTest.testRequestBook()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryDAOTest.testRequestBook(LibraryDAOTest.java:81)
+
+com.capgemini.librarymanagementspringrest.LibraryDAOTest.testRemoveBook()  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryDAOTest.testRemoveBook(LibraryDAOTest.java:75)
+
+com.capgemini.librarymanagementspringrest.LibraryDAOTest.testReturnBook()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryDAOTest.testReturnBook(LibraryDAOTest.java:105)
+
+com.capgemini.librarymanagementspringrest.LibraryDAOTest.testReceiveBook()  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryDAOTest.testReceiveBook(LibraryDAOTest.java:111)
+
+com.capgemini.librarymanagementspringrest.LibraryDAOTest.testLogin()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryDAOTest.testLogin(LibraryDAOTest.java:20)
+
+com.capgemini.librarymanagementspringrest.LibraryDAOTest.testUserLogin()  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryDAOTest.testUserLogin(LibraryDAOTest.java:26)
+
+com.capgemini.librarymanagementspringrest.LibraryDAOTest.testAddUser()  Time elapsed: 0.002 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryDAOTest.testAddUser(LibraryDAOTest.java:39)
+
+com.capgemini.librarymanagementspringrest.LibraryDAOTest.testAddBook()  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryDAOTest.testAddBook(LibraryDAOTest.java:57)
+
+com.capgemini.librarymanagementspringrest.LibraryDAOTest.testChangePassword()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryDAOTest.testChangePassword(LibraryDAOTest.java:99)
+

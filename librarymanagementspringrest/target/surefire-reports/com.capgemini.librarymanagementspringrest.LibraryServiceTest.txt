@@ -1,0 +1,40 @@
+-------------------------------------------------------------------------------
+Test set: com.capgemini.librarymanagementspringrest.LibraryServiceTest
+-------------------------------------------------------------------------------
+Tests run: 13, Failures: 9, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec <<< FAILURE!
+com.capgemini.librarymanagementspringrest.LibraryServiceTest.testIssueBook()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryServiceTest.testIssueBook(LibraryServiceTest.java:93)
+
+com.capgemini.librarymanagementspringrest.LibraryServiceTest.testRequestBook()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryServiceTest.testRequestBook(LibraryServiceTest.java:81)
+
+com.capgemini.librarymanagementspringrest.LibraryServiceTest.testRemoveBook()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryServiceTest.testRemoveBook(LibraryServiceTest.java:75)
+
+com.capgemini.librarymanagementspringrest.LibraryServiceTest.testReturnBook()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryServiceTest.testReturnBook(LibraryServiceTest.java:99)
+
+com.capgemini.librarymanagementspringrest.LibraryServiceTest.testReceiveBook()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryServiceTest.testReceiveBook(LibraryServiceTest.java:105)
+
+com.capgemini.librarymanagementspringrest.LibraryServiceTest.testLogin()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryServiceTest.testLogin(LibraryServiceTest.java:20)
+
+com.capgemini.librarymanagementspringrest.LibraryServiceTest.testUserLogin()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryServiceTest.testUserLogin(LibraryServiceTest.java:26)
+
+com.capgemini.librarymanagementspringrest.LibraryServiceTest.testAddUser()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryServiceTest.testAddUser(LibraryServiceTest.java:39)
+
+com.capgemini.librarymanagementspringrest.LibraryServiceTest.testAddBook()  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.capgemini.librarymanagementspringrest.LibraryServiceTest.testAddBook(LibraryServiceTest.java:57)
+

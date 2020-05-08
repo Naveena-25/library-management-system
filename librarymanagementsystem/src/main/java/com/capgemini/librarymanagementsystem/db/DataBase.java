@@ -20,9 +20,9 @@ public class DataBase {
 
 		USER_INFOS.add(new UserInfo(101, "naveena", "naveena@gmail.com", "Naveena@25", "7865454321", 0, 0));
 		USER_INFOS.add(new UserInfo(102, "priya", "priya@gmail.com", "Priya1@", "9771234641", 3, 5));
-		USER_INFOS.add(new UserInfo(103, "sri", "sri@gmail.com", "Laxmi1@", "9234554641", 1, 5));
+		USER_INFOS.add(new UserInfo(103, "sri", "sri@gmail.com", "Srika1@", "9234554641", 1, 5));
 
-		BOOK_DETAILS.add(new BookDetails(101, "java", "bala guruswamy", "Tata McGraw-Hill", true));
+		BOOK_DETAILS.add(new BookDetails(101, "Java", "bala guruswamy", "Tata McGraw-Hill", true));
 		BOOK_DETAILS.add(new BookDetails(102, "EveryOne Has A Story", "Savi Sharma", "Westland Publisher", false));
 		BOOK_DETAILS.add(new BookDetails(103, "Maha Bharat", "Vyasa", "Bharatiya Vidya Bhavan", true));
 		BOOK_DETAILS.add(new BookDetails(104, "C", "Bala Guruswamy", "Tata McGraw-Hill", true));

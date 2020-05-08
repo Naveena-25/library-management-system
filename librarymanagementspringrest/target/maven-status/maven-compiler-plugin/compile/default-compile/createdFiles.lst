@@ -1,0 +1,12 @@
+com\capgemini\librarymanagementspringrest\controller\LibraryRestController.class
+com\capgemini\librarymanagementspringrest\service\LibraryService.class
+com\capgemini\librarymanagementspringrest\dao\LibraryDAO.class
+com\capgemini\librarymanagementspringrest\dto\LibraryResponse.class
+com\capgemini\librarymanagementspringrest\dto\LibraryUsers.class
+com\capgemini\librarymanagementspringrest\controller\ControllerAdvice.class
+com\capgemini\librarymanagementspringrest\service\LibraryServiceImpl.class
+com\capgemini\librarymanagementspringrest\config\EntityManagerFactoryConfig.class
+com\capgemini\librarymanagementspringrest\dao\LibraryDAOImpl.class
+com\capgemini\librarymanagementspringrest\dto\BookDetails.class
+com\capgemini\librarymanagementspringrest\dto\RequestInfo.class
+com\capgemini\librarymanagementspringrest\exception\LMSException.class

@@ -1,8 +1,8 @@
 package com.capgemini.librarymanagementsystem.dao;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.capgemini.librarymanagementsystem.db.DataBase;
@@ -40,7 +40,7 @@ public class AdminDAOImpl implements AdminDAO {
 
 	@Override
 	public List<UserInfo> viewUsers() {
-		List<UserInfo> userList = new LinkedList<UserInfo>();
+		List<UserInfo> userList = new ArrayList<UserInfo>();
 		for (UserInfo user : DataBase.USER_INFOS) {
 			user.getUserId();
 			user.getUserName();
@@ -81,7 +81,7 @@ public class AdminDAOImpl implements AdminDAO {
 	@Override
 	public List<BookDetails> viewBooks() {
 
-		List<BookDetails> books = new LinkedList<BookDetails>();
+		List<BookDetails> books = new ArrayList<BookDetails>();
 		for (BookDetails bookDetails : DataBase.BOOK_DETAILS) {
 			bookDetails.getBookId();
 			bookDetails.getBookName();
@@ -97,7 +97,7 @@ public class AdminDAOImpl implements AdminDAO {
 
 	@Override
 	public List<RequestInfo> viewRequests() {
-		List<RequestInfo> requestsList = new LinkedList<RequestInfo>();
+		List<RequestInfo> requestsList = new ArrayList<RequestInfo>();
 
 		for (RequestInfo requestInfo : DataBase.REQUEST_INFOS) {
 			requestInfo.getBookId();
