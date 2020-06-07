@@ -88,9 +88,8 @@ public class LibraryDAOimpl implements LibraryDAO {
 			transaction.commit();
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
 			transaction.rollback();
-			return false;
+			throw new LMSException("Book Already Exists Or Can't add New Book");
 		} finally {
 			manager.close();
 			factory.close();
@@ -142,7 +141,7 @@ public class LibraryDAOimpl implements LibraryDAO {
 		EntityTransaction transaction = null;
 
 		RequestInfo info = new RequestInfo();
-		BookDetails bookInfo = new BookDetails();
+		BookDetails bookDetails = new BookDetails();
 		LibraryUsers user = new LibraryUsers();
 
 		int noOfBooksBorrowed = 0;
@@ -182,10 +181,10 @@ public class LibraryDAOimpl implements LibraryDAO {
 					transaction.commit();
 
 					transaction.begin();
-					bookInfo = manager.find(BookDetails.class, reqBookId);
-					bookInfo.setAvailable(false);
+					bookDetails = manager.find(BookDetails.class, reqBookId);
+					bookDetails.setAvailable(false);
 					transaction.commit();
-					return true;
+
 				} else {
 					throw new LMSException("This Book Is Already Issued");
 				}
@@ -201,6 +200,7 @@ public class LibraryDAOimpl implements LibraryDAO {
 			manager.close();
 			factory.close();
 		}
+		return true;
 	}
 
 	@Override
@@ -209,7 +209,7 @@ public class LibraryDAOimpl implements LibraryDAO {
 		EntityTransaction transaction = null;
 
 		RequestInfo requestInfo = new RequestInfo();
-		BookDetails bookInfo = new BookDetails();
+		BookDetails bookDetails = new BookDetails();
 		LibraryUsers libraryUsers = new LibraryUsers();
 
 		int noOfBooksBorrowed = 0;
@@ -254,15 +254,15 @@ public class LibraryDAOimpl implements LibraryDAO {
 					transaction.commit();
 
 					transaction.begin();
-					bookInfo = manager.find(BookDetails.class, reqBookId);
-					bookInfo.setAvailable(true);
+					bookDetails = manager.find(BookDetails.class, reqBookId);
+					bookDetails.setAvailable(true);
 					transaction.commit();
 
 					transaction.begin();
-					bookInfo = manager.find(BookDetails.class, reqBookId);
+					bookDetails = manager.find(BookDetails.class, reqBookId);
 					manager.remove(requestInfo);
 					transaction.commit();
-					return true;
+
 				} else {
 					throw new LMSException("Book is Not Returned By the User");
 				}
@@ -276,6 +276,7 @@ public class LibraryDAOimpl implements LibraryDAO {
 			manager.close();
 			factory.close();
 		}
+		return true;
 	}
 
 	@Override
@@ -287,8 +288,8 @@ public class LibraryDAOimpl implements LibraryDAO {
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 			transaction.begin();
-			BookDetails book = manager.find(BookDetails.class, bookId);
-			manager.remove(book);
+			BookDetails bookDetails = manager.find(BookDetails.class, bookId);
+			manager.remove(bookDetails);
 			transaction.commit();
 			return true;
 		} catch (Exception e) {
@@ -436,10 +437,12 @@ public class LibraryDAOimpl implements LibraryDAO {
 
 			for (RequestInfo requestInfo : list) {
 				if ((requestInfo.getBookId() == bookId) && (requestInfo.getId() == userId)) {
-					if (requestInfo.getReturnedDate() != null) {
-						throw new LMSException("Book is Already Returned By The User");
-					} else {
-						requestId = requestInfo.getRId();
+					if(requestInfo.getIssueDate() != null) {
+						if (requestInfo.getReturnedDate() != null) {
+							throw new LMSException("Book is Already Returned By The User");
+						} else {
+							requestId = requestInfo.getRId();
+						}
 					}
 				}
 			}
@@ -448,7 +451,7 @@ public class LibraryDAOimpl implements LibraryDAO {
 				info = manager.find(RequestInfo.class, requestId);
 				info.setReturnedDate(returnedDate);
 				transaction.commit();
-			
+
 			} else {
 				throw new LMSException("Invalid Book Return as User Id or Book Id Doesn't Match");
 			}

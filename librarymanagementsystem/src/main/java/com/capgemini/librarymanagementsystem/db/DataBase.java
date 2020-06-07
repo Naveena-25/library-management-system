@@ -26,7 +26,7 @@ public class DataBase {
 		BOOK_DETAILS.add(new BookDetails(102, "EveryOne Has A Story", "Savi Sharma", "Westland Publisher", false));
 		BOOK_DETAILS.add(new BookDetails(103, "Maha Bharat", "Vyasa", "Bharatiya Vidya Bhavan", true));
 		BOOK_DETAILS.add(new BookDetails(104, "C", "Bala Guruswamy", "Tata McGraw-Hill", true));
-		BOOK_DETAILS.add(new BookDetails(105, "Three Mistakes Of Life", "Chetan Bhagat", "Pengiun", true));
+		BOOK_DETAILS.add(new BookDetails(105, "Ramayan", "Valmiki", "Valmiki", true));
 
 	}
 

@@ -84,15 +84,14 @@ public class UserDAOImpl implements UserDAO {
 
 		for (RequestInfo requestInfo : DataBase.REQUEST_INFOS) {
 
-			if ((requestInfo.getBookId() == bookId) && (requestInfo.getUserId() == userId)
-					&& (requestInfo.isIssued() == true)) {
-				requestInfo.setReturned(true);
-				requestInfo.setReturnedDate(returnedDate);
-				return true;
+			if ((requestInfo.getBookId() == bookId) && (requestInfo.getUserId() == userId)) {
+				if (requestInfo.isReturned() == false) {
+					requestInfo.setReturned(true);
+					requestInfo.setReturnedDate(returnedDate);
+					return true;
+				}
 			}
-
 		}
-
 		throw new LMSException("Invalid Book Return Because of Invalid user Id/Book Id");
 	}
 

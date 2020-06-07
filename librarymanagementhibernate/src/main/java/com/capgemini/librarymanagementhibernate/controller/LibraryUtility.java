@@ -449,7 +449,7 @@ public class LibraryUtility {
 							userChoice = checkChoice();
 							switch (userChoice) {
 							case 1:
-								System.out.println("Enter the EmailId");
+								System.out.println("Enter the Id");
 								id = checkId();
 								System.out.println("Enter old password");
 								password = checkPassword();

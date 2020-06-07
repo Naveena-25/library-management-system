@@ -3,6 +3,7 @@ package com.capgemini.librarymanagementjdbc.dto;
 import java.io.Serializable;
 import java.sql.Date;
 
+@SuppressWarnings("serial")
 public class RequestInfo implements Serializable {
 
 	private int requestId;

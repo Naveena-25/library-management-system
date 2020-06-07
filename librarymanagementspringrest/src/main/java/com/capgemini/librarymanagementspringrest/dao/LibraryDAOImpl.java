@@ -7,7 +7,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -26,11 +25,10 @@ public class LibraryDAOImpl implements LibraryDAO {
 	private EntityManagerFactory factory;
 
 	@Override
-	public LibraryUsers login(String emailId, String password) {
+	public LibraryUsers userLogin(String emailId, String password) {
 		EntityManager manager = null;
-		factory = Persistence.createEntityManagerFactory("libraryPersistence");
 		manager = factory.createEntityManager();
-		String jpql = "select a from  LibraryUsers a where a.emailId = :emailId and a.password =:password";
+		String jpql = " from  LibraryUsers where emailId = :emailId and password =:password";
 		TypedQuery<LibraryUsers> query = manager.createQuery(jpql, LibraryUsers.class);
 		query.setParameter("emailId", emailId);
 		query.setParameter("password", password);
@@ -38,21 +36,21 @@ public class LibraryDAOImpl implements LibraryDAO {
 			return query.getSingleResult();
 		} catch (Exception e) {
 			throw new LMSException("Invalid Login Credentials, Please Enter Correctly");
+
 		} finally {
 			manager.close();
 		}
 	}
 
 	@Override
-	public boolean addUser(LibraryUsers info) {
+	public boolean addUser(LibraryUsers libraryUsers) {
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
 		try {
-			factory = Persistence.createEntityManagerFactory("libraryPersistence");
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 			transaction.begin();
-			manager.persist(info);
+			manager.persist(libraryUsers);
 			transaction.commit();
 			return true;
 		} catch (Exception e) {
@@ -66,13 +64,12 @@ public class LibraryDAOImpl implements LibraryDAO {
 	@Override
 	public List<LibraryUsers> viewUsers() {
 		EntityManager manager = null;
-		factory = Persistence.createEntityManagerFactory("libraryPersistence");
 		manager = factory.createEntityManager();
 		String jpql = "select m from LibraryUsers m";
 		TypedQuery<LibraryUsers> query = manager.createQuery(jpql, LibraryUsers.class);
-		List<LibraryUsers> recordlist = query.getResultList();
+		List<LibraryUsers> userList = query.getResultList();
 		manager.close();
-		return recordlist;
+		return userList;
 
 	}
 
@@ -81,8 +78,6 @@ public class LibraryDAOImpl implements LibraryDAO {
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
 		try {
-
-			factory = Persistence.createEntityManagerFactory("libraryPersistence");
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 			transaction.begin();
@@ -101,10 +96,8 @@ public class LibraryDAOImpl implements LibraryDAO {
 	@Override
 	public BookDetails search(int bookId) {
 		EntityManager manager = null;
-		factory = Persistence.createEntityManagerFactory("libraryPersistence");
 		manager = factory.createEntityManager();
 		BookDetails search = manager.find(BookDetails.class, bookId);
-
 		manager.close();
 		return search;
 	}
@@ -112,20 +105,50 @@ public class LibraryDAOImpl implements LibraryDAO {
 	@Override
 	public List<BookDetails> viewBooks() {
 		EntityManager manager = null;
-		factory = Persistence.createEntityManagerFactory("libraryPersistence");
 		manager = factory.createEntityManager();
 		String jpql = "select m from BookDetails m";
 		TypedQuery<BookDetails> query = manager.createQuery(jpql, BookDetails.class);
-		List<BookDetails> listOfBooks = query.getResultList();
+		List<BookDetails> bookList = query.getResultList();
 		manager.close();
-		return listOfBooks;
+		return bookList;
+
+	}
+
+	@Override
+	public BookDetails updateBook(BookDetails bookDetails) {
+		EntityManager manager = null;
+		EntityTransaction transaction = null;
+		try {
+			manager = factory.createEntityManager();
+			transaction = manager.getTransaction();
+			transaction.begin();
+
+			BookDetails book = manager.find(BookDetails.class, bookDetails.getBookId());
+			if (bookDetails.getBookName() != null) {
+				book.setBookName(bookDetails.getBookName());
+			}
+			if (bookDetails.getAuthor() != null) {
+				book.setAuthor(bookDetails.getAuthor());
+			}
+			if (bookDetails.getPublisher() != null) {
+				book.setPublisher(bookDetails.getPublisher());
+			}
+			if (!(bookDetails.isAvailable() == book.isAvailable())) {
+				book.setAvailable(bookDetails.isAvailable());
+			}
+			transaction.commit();
+			return book;
+		} catch (Exception e) {
+			return null;
+		} finally {
+			manager.close();
+		}
 
 	}
 
 	@Override
 	public List<RequestInfo> viewRequests() {
 		EntityManager manager = null;
-		factory = Persistence.createEntityManagerFactory("libraryPersistence");
 		manager = factory.createEntityManager();
 		String jpql = "select m from RequestInfo m";
 		TypedQuery<RequestInfo> query = manager.createQuery(jpql, RequestInfo.class);
@@ -140,7 +163,7 @@ public class LibraryDAOImpl implements LibraryDAO {
 		EntityTransaction transaction = null;
 
 		RequestInfo info = new RequestInfo();
-		BookDetails bookInfo = new BookDetails();
+		BookDetails book = new BookDetails();
 		LibraryUsers user = new LibraryUsers();
 
 		int noOfBooksBorrowed = 0;
@@ -154,7 +177,6 @@ public class LibraryDAOImpl implements LibraryDAO {
 		expectedReturnDate = calendar.getTime();
 
 		try {
-			factory = Persistence.createEntityManagerFactory("libraryPersistence");
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 
@@ -180,10 +202,9 @@ public class LibraryDAOImpl implements LibraryDAO {
 					transaction.commit();
 
 					transaction.begin();
-					bookInfo = manager.find(BookDetails.class, reqBookId);
-					bookInfo.setAvailable(false);
+					book = manager.find(BookDetails.class, reqBookId);
+					book.setAvailable(false);
 					transaction.commit();
-					return true;
 				} else {
 					throw new LMSException("This Book Is Already Issued");
 				}
@@ -197,8 +218,8 @@ public class LibraryDAOImpl implements LibraryDAO {
 			throw new LMSException(e.getMessage());
 		} finally {
 			manager.close();
-
 		}
+		return true;
 	}
 
 	@Override
@@ -207,7 +228,7 @@ public class LibraryDAOImpl implements LibraryDAO {
 		EntityTransaction transaction = null;
 
 		RequestInfo requestInfo = new RequestInfo();
-		BookDetails bookInfo = new BookDetails();
+		BookDetails bookDetails = new BookDetails();
 		LibraryUsers libraryUsers = new LibraryUsers();
 
 		int noOfBooksBorrowed = 0;
@@ -219,7 +240,6 @@ public class LibraryDAOImpl implements LibraryDAO {
 		Date returnedDate = null;
 
 		try {
-			factory = Persistence.createEntityManagerFactory("libraryPersistence");
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 
@@ -252,15 +272,14 @@ public class LibraryDAOImpl implements LibraryDAO {
 					transaction.commit();
 
 					transaction.begin();
-					bookInfo = manager.find(BookDetails.class, reqBookId);
-					bookInfo.setAvailable(true);
+					bookDetails = manager.find(BookDetails.class, reqBookId);
+					bookDetails.setAvailable(true);
 					transaction.commit();
 
 					transaction.begin();
-					bookInfo = manager.find(BookDetails.class, reqBookId);
+					bookDetails = manager.find(BookDetails.class, reqBookId);
 					manager.remove(requestInfo);
 					transaction.commit();
-					return true;
 
 				} else {
 					throw new LMSException("Book is Not Returned By the User");
@@ -274,6 +293,7 @@ public class LibraryDAOImpl implements LibraryDAO {
 		} finally {
 			manager.close();
 		}
+		return true;
 	}
 
 	@Override
@@ -281,17 +301,16 @@ public class LibraryDAOImpl implements LibraryDAO {
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
 		try {
-			factory = Persistence.createEntityManagerFactory("libraryPersistence");
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 			transaction.begin();
-			BookDetails book = manager.find(BookDetails.class, bookId);
-			if (book != null) {
-				manager.remove(book);
+			BookDetails bookDetails = manager.find(BookDetails.class, bookId);
+			if (bookDetails != null) {
+				manager.remove(bookDetails);
 				transaction.commit();
 				return true;
 			} else {
-				throw new LMSException("Boook Id not present In db");
+				throw new LMSException("Book with The Given ID is not Present in the Lbrary");
 
 			}
 		} catch (Exception e) {
@@ -304,73 +323,23 @@ public class LibraryDAOImpl implements LibraryDAO {
 	}
 
 	@Override
-	public LibraryUsers userLogin(String emailId, String password) {
-		EntityManager manager = null;
-		factory = Persistence.createEntityManagerFactory("libraryPersistence");
-		manager = factory.createEntityManager();
-		String jpql = " from  LibraryUsers where emailId = :emailId and password =:password";
-		TypedQuery<LibraryUsers> query = manager.createQuery(jpql, LibraryUsers.class);
-		query.setParameter("emailId", emailId);
-		query.setParameter("password", password);
-		try {
-			return query.getSingleResult();
-		} catch (Exception e) {
-			throw new LMSException("Invalid Login Credentials, Please Enter Correctly");
-
-		} finally {
-			manager.close();
-		}
-	}
-
-	@Override
-	public boolean changePassword(int userId, String oldPassword, String newPassword) {
-		EntityManager manager = null;
-		EntityTransaction transaction = null;
-		LibraryUsers user = new LibraryUsers();
-		String password = null;
-
-		try {
-			factory = Persistence.createEntityManagerFactory("libraryPersistence");
-			manager = factory.createEntityManager();
-			transaction = manager.getTransaction();
-
-			transaction.begin();
-			user = manager.find(LibraryUsers.class, userId);
-			password = user.getPassword();
-			if (password.equals(oldPassword)) {
-
-				user.setPassword(newPassword);
-				transaction.commit();
-			} else {
-				throw new LMSException("Invalid Password, Password Can't Be Changed");
-			}
-		} catch (LMSException e) {
-			throw new LMSException(e.getMessage());
-		} finally {
-			manager.close();
-		}
-		return true;
-	}
-
-	@Override
 	public boolean bookRequest(int userId, int bookId) {
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
 
 		RequestInfo info = new RequestInfo();
 		BookDetails bookDetails = new BookDetails();
-		LibraryUsers user = new LibraryUsers();
+		LibraryUsers libraryUsers = new LibraryUsers();
 
 		String jpql = null;
 		int noOfRequests = 0;
 
 		try {
-			factory = Persistence.createEntityManagerFactory("libraryPersistence");
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 
-			user = manager.find(LibraryUsers.class, userId);
-			if (user != null) {
+			libraryUsers = manager.find(LibraryUsers.class, userId);
+			if (libraryUsers != null) {
 
 				jpql = "select count(*) from RequestInfo r where r.id=:userId";
 				Query query = manager.createQuery(jpql);
@@ -380,7 +349,7 @@ public class LibraryDAOImpl implements LibraryDAO {
 				if (noOfRequests < 3) {
 					bookDetails = manager.find(BookDetails.class, bookId);
 					if (bookDetails != null) {
-						jpql = "select ri from RequestInfo ri";
+						jpql = "select r from RequestInfo r";
 						TypedQuery<RequestInfo> query1 = manager.createQuery(jpql, RequestInfo.class);
 						List<RequestInfo> list = query1.getResultList();
 						for (RequestInfo requestInfo : list) {
@@ -417,6 +386,49 @@ public class LibraryDAOImpl implements LibraryDAO {
 	}
 
 	@Override
+	public List<RequestInfo> getAllReqBook() {
+		EntityManager manager = null;
+		manager = factory.createEntityManager();
+		String jpql = "select m from RequestInfo where m.issueDate = null";
+		TypedQuery<RequestInfo> query = manager.createQuery(jpql, RequestInfo.class);
+		List<RequestInfo> requestList = query.getResultList();
+		manager.close();
+		return requestList;
+	}
+
+	@Override
+	public List<RequestInfo> getAllReturnedBook() {
+		EntityManager manager = null;
+		manager = factory.createEntityManager();
+		String jpql = "select m from RequestInfo where m.returnedDate != null";
+		TypedQuery<RequestInfo> query = manager.createQuery(jpql, RequestInfo.class);
+		List<RequestInfo> requestlist = query.getResultList();
+		manager.close();
+		return requestlist;
+	}
+
+	@Override
+	public List<RequestInfo> userBooks(int userId) {
+
+		EntityManager manager = null;
+		String jpql = null;
+		try {
+			manager = factory.createEntityManager();
+			jpql = "select info from RequestInfo info where info.id =: userId";
+			TypedQuery<RequestInfo> query = manager.createQuery(jpql, RequestInfo.class);
+			query.setParameter("userId", userId);
+			List<RequestInfo> requestList = query.getResultList();
+			if ((requestList != null) && (!requestList.isEmpty())) {
+				return requestList;
+			} else {
+				throw new LMSException("No Books Borrowed By the User");
+			}
+		} catch (LMSException e) {
+			throw new LMSException(e.getMessage());
+		}
+	}
+
+	@Override
 	public boolean bookReturn(int userId, int bookId) {
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
@@ -425,25 +437,26 @@ public class LibraryDAOImpl implements LibraryDAO {
 		String jpql = null;
 		int requestId = 0;
 
-		Calendar calendar2 = Calendar.getInstance();
-		calendar2.add(Calendar.DATE, 20);
-		Date returnedDate = calendar2.getTime();
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, 20);
+		Date returnedDate = calendar.getTime();
 
 		try {
-			factory = Persistence.createEntityManagerFactory("libraryPersistence");
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 
-			jpql = "select ri from RequestInfo ri ";
+			jpql = "select r from RequestInfo r ";
 			TypedQuery<RequestInfo> query = manager.createQuery(jpql, RequestInfo.class);
 			List<RequestInfo> list = query.getResultList();
 
 			for (RequestInfo requestInfo : list) {
 				if ((requestInfo.getBookId() == bookId) && (requestInfo.getId() == userId)) {
-					if (requestInfo.getReturnedDate() != null) {
-						throw new LMSException("Book is Already Returned By The User");
-					} else {
-						requestId = requestInfo.getRId();
+					if (requestInfo.getIssueDate() != null) {
+						if (requestInfo.getReturnedDate() != null) {
+							throw new LMSException("Book is Already Returned By The User");
+						} else {
+							requestId = requestInfo.getrId();
+						}
 					}
 				}
 			}
@@ -452,7 +465,6 @@ public class LibraryDAOImpl implements LibraryDAO {
 				info = manager.find(RequestInfo.class, requestId);
 				info.setReturnedDate(returnedDate);
 				transaction.commit();
-				return true;
 			} else {
 				throw new LMSException("Invalid Book Return as User Id or Book Id Doesn't Match");
 			}
@@ -462,6 +474,6 @@ public class LibraryDAOImpl implements LibraryDAO {
 		} finally {
 			manager.close();
 		}
-
+		return true;
 	}
 }

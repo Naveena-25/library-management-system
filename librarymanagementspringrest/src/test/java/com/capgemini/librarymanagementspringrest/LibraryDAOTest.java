@@ -5,25 +5,20 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.capgemini.librarymanagementspringrest.dao.LibraryDAO;
+import com.capgemini.librarymanagementspringrest.dao.LibraryDAOImpl;
 import com.capgemini.librarymanagementspringrest.dto.BookDetails;
 import com.capgemini.librarymanagementspringrest.dto.LibraryUsers;
 import com.capgemini.librarymanagementspringrest.dto.RequestInfo;
 
 public class LibraryDAOTest {
-	@Autowired
-	LibraryDAO dao;	
-	@Test
-	public void testLogin() {
-		LibraryUsers userLogin = dao.login("admin@gmail.com", "Admin1@");
-		Assertions.assertNotNull(userLogin);
-	}
+	
+	private LibraryDAO dao = new LibraryDAOImpl() ;	
 
 	@Test
 	public void testUserLogin() {
-		LibraryUsers userLogin = dao.userLogin("naveena@gmail.com", "Naveena@2");
+		LibraryUsers userLogin = dao.userLogin("admin@gmail.com", "Admin1@");
 		Assertions.assertNotNull(userLogin);
 	}
 
@@ -92,12 +87,6 @@ public class LibraryDAOTest {
 	public void testIssueBook() {
 		Boolean issue = dao.issueBook(15);
 		Assertions.assertTrue(issue);
-	}
-
-	@Test
-	public void testChangePassword() {
-		Boolean change = dao.changePassword(101, "Pravali@", "Pravs1@");
-		Assertions.assertTrue(change);
 	}
 
 	@Test

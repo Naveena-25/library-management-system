@@ -259,7 +259,7 @@ public class LibraryUtility {
 						case 4:
 							book = new BookDetails();
 							System.out.println("Enter Book details");
-							System.out.println("---------------------------");
+							System.out.println("----------------------------------------");
 							bookId = (int) (Math.random() * 1000);
 							if (bookId <= 100) {
 								bookId = bookId + 100;

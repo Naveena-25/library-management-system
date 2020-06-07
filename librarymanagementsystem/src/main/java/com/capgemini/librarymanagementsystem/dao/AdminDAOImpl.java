@@ -24,7 +24,7 @@ public class AdminDAOImpl implements AdminDAO {
 				return true;
 			}
 		}
-		throw new LMSException("Invalid Login Credentials Please Enter Correctly");
+		throw new LMSException("Invalid Login Credentials, Please Enter Correctly");
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class AdminDAOImpl implements AdminDAO {
 			books.add(bookDetails);
 		}
 		if (books.isEmpty()) {
-			throw new LMSException("No Books Found In The Library with the Given Book Id");
+			throw new LMSException("No Books Present In The Library with the Given Book Id");
 		}
 		return books;
 	}
@@ -107,7 +107,7 @@ public class AdminDAOImpl implements AdminDAO {
 			requestsList.add(requestInfo);
 		}
 		if (requestsList.isEmpty()) {
-			throw new LMSException("No Requests Found In The Library");
+			throw new LMSException("No Requests Present In The Library");
 		} else {
 			return requestsList;
 		}
@@ -171,11 +171,11 @@ public class AdminDAOImpl implements AdminDAO {
 	public boolean removeBook(int bookId) {
 		for (BookDetails bookDetails : DataBase.BOOK_DETAILS) {
 			if (bookDetails.getBookId() == bookId) {
-				DataBase.BOOK_DETAILS.remove(bookId);
+				DataBase.BOOK_DETAILS.remove(bookDetails);
 				return true;
 			}
 		}
-		throw new LMSException("Unable To Remove The Book");
+		throw new LMSException("Unable To Remove The Book from the Library");
 	}
 
 	@Override

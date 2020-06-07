@@ -2,6 +2,8 @@ package com.capgemini.librarymanagementjdbc.dto;
 
 import java.io.Serializable;
 
+
+@SuppressWarnings("serial")
 public class LibraryUsers implements Serializable {
 
 	private int id;

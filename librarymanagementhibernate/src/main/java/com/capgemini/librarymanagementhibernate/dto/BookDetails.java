@@ -8,10 +8,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+
+@SuppressWarnings("serial")
 @Data
 @Entity
 @Table(name = "library_books")
-public class BookDetails implements Serializable{
+public class BookDetails implements Serializable {
 	@Id
 	@Column
 	private int bookId;

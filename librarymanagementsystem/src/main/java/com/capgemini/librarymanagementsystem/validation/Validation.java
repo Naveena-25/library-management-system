@@ -14,7 +14,7 @@ public class Validation {
 		if (Pattern.matches(idRegEx, String.valueOf(id))) {
 			result = true;
 		} else {
-			throw new LMSException("Please Enter valid Id which Contains Exact 3 Digits, First Digit Should be 1");
+			throw new LMSException("Please Enter valid Id, It Should Contain Exact 3 Digits");
 		}
 		return result;
 	}

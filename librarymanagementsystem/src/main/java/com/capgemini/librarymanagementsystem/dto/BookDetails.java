@@ -2,6 +2,7 @@ package com.capgemini.librarymanagementsystem.dto;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class BookDetails implements Serializable {
 
 	private int bookId;

@@ -12,10 +12,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.Data;
+
+@SuppressWarnings("serial")
 @Data
 @Entity
 @Table(name = "request")
-public class RequestInfo implements Serializable{
+public class RequestInfo implements Serializable {
 
 	@Id
 	@Column
@@ -23,7 +25,7 @@ public class RequestInfo implements Serializable{
 	private int rId;
 	@Column
 	private int id;
-	@Column(name = "bookId",unique = true)
+	@Column(name = "bookId", unique = true)
 	private int bookId;
 	@Column
 	@Temporal(TemporalType.DATE)

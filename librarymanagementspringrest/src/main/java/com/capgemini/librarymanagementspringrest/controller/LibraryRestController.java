@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,15 +20,18 @@ import com.capgemini.librarymanagementspringrest.dto.RequestInfo;
 import com.capgemini.librarymanagementspringrest.service.LibraryService;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 public class LibraryRestController {
 	@Autowired
 	private LibraryService service;
 
 	@PostMapping(path = "/userLogin", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public LibraryResponse userLogin(@RequestBody Map<String, String> inputJson) {
-		LibraryUsers userLogin = service.userLogin(inputJson.get("emailId"), inputJson.get("pwd"));
+		LibraryUsers userLogin = service.userLogin(inputJson.get("emailId"), inputJson.get("password"));
 		LibraryResponse response = new LibraryResponse();
+
 		if (userLogin != null) {
+			response.setLibraryUsers(userLogin);
 			response.setMessage("User Logged in Successfully");
 		} else {
 			response.setError(true);
@@ -81,7 +85,7 @@ public class LibraryRestController {
 	}
 
 	@GetMapping(path = "/searchBook/{bookId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public LibraryResponse searchBook(@PathVariable("bookId") int bookId) {
+	public LibraryResponse searchBook(@PathVariable(name = "bookId") int bookId) {
 		BookDetails bookDetails = service.search(bookId);
 		LibraryResponse response = new LibraryResponse();
 		if (bookDetails != null) {
@@ -107,9 +111,25 @@ public class LibraryRestController {
 		return response;
 	}
 
+	@PostMapping(path = "/updateBook", produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE,
+					MediaType.APPLICATION_XML_VALUE })
+	public LibraryResponse updateBook(@RequestBody BookDetails bookDetails) {
+		BookDetails isUpdated = service.updateBook(bookDetails);
+		LibraryResponse response = new LibraryResponse();
+		if (isUpdated != null) {
+			response.setMessage("Book Updated Successfully");
+			response.setBookDetails(isUpdated);
+		} else {
+			response.setError(true);
+			response.setMessage("Book Can't be Updated");
+		}
+		return response;
+	}
+
 	@DeleteMapping(path = "/deleteBook/{bookId}", produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE })
-	public LibraryResponse deleteBook(@PathVariable(name = "bookId") int bookId) {
+	public LibraryResponse deleteBook(@PathVariable Integer bookId) {
 		boolean isDeleted = service.removeBook(bookId);
 		LibraryResponse response = new LibraryResponse();
 		if (isDeleted) {
@@ -121,11 +141,11 @@ public class LibraryRestController {
 		return response;
 	}
 
-	@GetMapping(path = "/requestBook/{userId}/{bookId}", produces = { MediaType.APPLICATION_JSON_VALUE,
-			MediaType.APPLICATION_XML_VALUE })
-	public LibraryResponse requestBook(@PathVariable(name = "userId") int userId,
-			@PathVariable(name = "bookId") int bookId) {
-		boolean isRequested = service.bookRequest(userId, bookId);
+	@PostMapping(path = "/requestBook/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE,
+					MediaType.APPLICATION_XML_VALUE })
+	public LibraryResponse requestBook(@RequestBody BookDetails bookDetails, @PathVariable Integer userId) {
+		boolean isRequested = service.bookRequest(userId, bookDetails.getBookId());
 		LibraryResponse response = new LibraryResponse();
 		if (isRequested) {
 			response.setMessage("Book Request Placed Successfully");
@@ -143,7 +163,51 @@ public class LibraryRestController {
 		LibraryResponse response = new LibraryResponse();
 		if (requestList != null && !requestList.isEmpty()) {
 			response.setRequestList(requestList);
-			;
+		} else {
+			response.setError(true);
+			response.setMessage("No Books Found In the Library");
+		}
+
+		return response;
+	}
+	
+	@GetMapping(path = "/getAllRequestedBooks", produces = MediaType.APPLICATION_JSON_VALUE)
+	public LibraryResponse getAllReqBook() {
+		List<RequestInfo> requestList = service.viewRequests();
+
+		LibraryResponse response = new LibraryResponse();
+		if (requestList != null && !requestList.isEmpty()) {
+			response.setRequestList(requestList);
+		} else {
+			response.setError(true);
+			response.setMessage("No Books Found In the Library");
+		}
+
+		return response;
+	}
+	
+	@GetMapping(path = "/userBooks/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE })
+	public LibraryResponse userTakenBooks(@PathVariable int userId) {
+		List<RequestInfo> requestInfo = service.userBooks(userId);
+		LibraryResponse response = new LibraryResponse();
+		if ((requestInfo != null) && (!requestInfo.isEmpty())) {
+			response.setMessage("Borrowed Books By the User");
+			response.setRequestList(requestInfo);
+		} else {
+			response.setError(true);
+			response.setMessage("No Books Are Borrowed By the User");
+		}
+		return response;
+	}
+	
+	@GetMapping(path = "/getAllReturnedBooks", produces = MediaType.APPLICATION_JSON_VALUE)
+	public LibraryResponse getAllReturnedBook() {
+		List<RequestInfo> requestList = service.viewRequests();
+
+		LibraryResponse response = new LibraryResponse();
+		if (requestList != null && !requestList.isEmpty()) {
+			response.setRequestList(requestList);
 		} else {
 			response.setError(true);
 			response.setMessage("No Books Found In the Library");
@@ -152,10 +216,12 @@ public class LibraryRestController {
 		return response;
 	}
 
-	@GetMapping(path = "/issueBook/{rId}", produces = { MediaType.APPLICATION_JSON_VALUE,
-			MediaType.APPLICATION_XML_VALUE })
-	public LibraryResponse issueBook(@PathVariable(name = "rId") int requestId) {
-		boolean isIssued = service.issueBook(requestId);
+
+	@PostMapping(path = "/issueBook", produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE,
+					MediaType.APPLICATION_XML_VALUE })
+	public LibraryResponse issueBook(@RequestBody RequestInfo requestInfo) {
+		boolean isIssued = service.issueBook(requestInfo.getrId());
 		LibraryResponse response = new LibraryResponse();
 		if (isIssued) {
 			response.setMessage("Book Issued to the User");
@@ -166,11 +232,11 @@ public class LibraryRestController {
 		return response;
 	}
 
-	@GetMapping(path = "/returnBook/{userId}/{bookId}", produces = { MediaType.APPLICATION_JSON_VALUE,
-			MediaType.APPLICATION_XML_VALUE })
-	public LibraryResponse returnBook(@PathVariable(name = "userId") int userId,
-			@PathVariable(name = "bookId") int bookId) {
-		boolean isReturned = service.bookReturn(userId, bookId);
+	@PostMapping(path = "/returnBook/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE,
+					MediaType.APPLICATION_XML_VALUE })
+	public LibraryResponse returnBook(@RequestBody RequestInfo requestInfo,@PathVariable  Integer userId) {
+		boolean isReturned = service.bookReturn(userId, requestInfo.getBookId());
 		LibraryResponse response = new LibraryResponse();
 		if (isReturned) {
 			response.setMessage("Book Returned By the User Successfully");
@@ -181,11 +247,11 @@ public class LibraryRestController {
 		return response;
 	}
 
-	@GetMapping(path = "/receiveBook/{rId}", produces = { MediaType.APPLICATION_JSON_VALUE,
-			MediaType.APPLICATION_XML_VALUE })
-	public LibraryResponse receiveBook(@PathVariable(name = "rId") int requestId) {
-		boolean isReceived = service.receiveBook(requestId);
-
+	@PostMapping(path = "/receiveBook", produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE,
+					MediaType.APPLICATION_XML_VALUE })
+	public LibraryResponse receiveBook(@RequestBody RequestInfo requestInfo) {
+		boolean isReceived = service.receiveBook(requestInfo.getrId());
 		LibraryResponse response = new LibraryResponse();
 		if (isReceived) {
 			response.setMessage("Book Received Successfully");

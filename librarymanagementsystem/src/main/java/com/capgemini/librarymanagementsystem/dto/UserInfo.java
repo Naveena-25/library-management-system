@@ -2,6 +2,7 @@ package com.capgemini.librarymanagementsystem.dto;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class UserInfo implements Serializable {
 
 	private int userId;

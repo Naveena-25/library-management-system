@@ -14,7 +14,7 @@ public class Validation {
 		if (Pattern.matches(idRegEx, String.valueOf(id))) {
 			result = true;
 		} else {
-			throw new LMSException("Please Enter valid Id which Contains Exact 3 Digits, First Digit Should be 1");
+			throw new LMSException("Please Enter valid Id which Should Contain Exact 3 Digits");
 		}
 		return result;
 	}
@@ -28,7 +28,7 @@ public class Validation {
 		if (matcher.matches()) {
 			result = true;
 		} else {
-			throw new LMSException("Name Should Contains only Alphabets");
+			throw new LMSException("Name Should Contain only Alphabets");
 		}
 		return result;
 	}
@@ -43,7 +43,7 @@ public class Validation {
 		if (matcher.matches()) {
 			result = true;
 		} else {
-			throw new LMSException("Enter The Proper Email ID");
+			throw new LMSException("Please Enter a Valid Email ID");
 		}
 		return result;
 	}

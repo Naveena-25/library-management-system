@@ -123,7 +123,7 @@ public class LibraryDAOImpl implements LibraryDAO {
 				}
 			}
 		} catch (Exception e) {
-			e.getMessage();
+			throw new LMSException(e.getMessage());
 		}
 		throw new LMSException("Book is Not Found in the Library with the Given Book Id");
 	}
@@ -199,9 +199,8 @@ public class LibraryDAOImpl implements LibraryDAO {
 				if (getReqSet.next()) {
 					int requestUserId = getReqSet.getInt("id");
 					int requestBookId = getReqSet.getInt("book_id");
-
-					if (requestUserId != 0) {
-						getUserPstmt.setInt(1, requestUserId);
+					getUserPstmt.setInt(1, requestUserId);
+					
 						try (ResultSet getUserSet = getUserPstmt.executeQuery();) {
 
 							if (getUserSet.next()) {
@@ -231,7 +230,7 @@ public class LibraryDAOImpl implements LibraryDAO {
 						throw new LMSException("Request not Found with Matching BookId (or) UserId ");
 					}
 				}
-			}
+			
 		} catch (Exception e) {
 			throw new LMSException(e.getMessage());
 

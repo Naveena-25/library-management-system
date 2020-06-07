@@ -16,15 +16,15 @@ public class LibraryServiceImpl implements LibraryService {
 	LibraryDAO dao;
 
 	@Override
-	public LibraryUsers login(String emailId, String password) {
+	public LibraryUsers userLogin(String emailId, String password) {
 
-		return dao.login(emailId, password);
+		return dao.userLogin(emailId, password);
 	}
 
 	@Override
-	public boolean addUser(LibraryUsers info) {
+	public boolean addUser(LibraryUsers libraryUsers) {
 
-		return dao.addUser(info);
+		return dao.addUser(libraryUsers);
 	}
 
 	@Override
@@ -52,6 +52,12 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Override
+	public BookDetails updateBook(BookDetails bookDetails) {
+		
+		return dao.updateBook(bookDetails);
+	}
+
+	@Override
 	public List<RequestInfo> viewRequests() {
 
 		return dao.viewRequests();
@@ -70,21 +76,15 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	@Override
-	public LibraryUsers userLogin(String emailId, String password) {
-
-		return dao.userLogin(emailId, password);
-	}
-
-	@Override
-	public boolean changePassword(int userId, String oldPassword, String newPassword) {
-
-		return dao.changePassword(userId, oldPassword, newPassword);
-	}
-
-	@Override
 	public boolean bookRequest(int userId, int bookId) {
 
 		return dao.bookRequest(userId, bookId);
+	}
+	
+	@Override
+	public List<RequestInfo> userBooks(int userId) {
+
+		return dao.userBooks(userId);
 	}
 
 	@Override
@@ -98,5 +98,18 @@ public class LibraryServiceImpl implements LibraryService {
 
 		return dao.receiveBook(requestId);
 	}
+
+	@Override
+	public List<RequestInfo> getAllReqBook() {
+		
+		return dao.getAllReqBook();
+	}
+
+	@Override
+	public List<RequestInfo> getAllReturnedBook() {
+		
+		return dao.getAllReturnedBook();
+	}
+
 
 }
